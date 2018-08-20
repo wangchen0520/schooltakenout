@@ -81,11 +81,6 @@
                     android:src="@drawable/ic_right"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginLeft="55dp"
-                android:layout_height="2dp"
-                android:textColor="#000000"/>
             <LinearLayout
                 android:id="@+id/item_2"
                 android:layout_width="match_parent"
@@ -110,11 +105,6 @@
                     android:src="@drawable/ic_right"
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginLeft="55dp"
-                android:layout_height="5dp"
-                android:textColor="#000000"/>
             <LinearLayout
                 android:id="@+id/item_3"
                 android:layout_width="match_parent"

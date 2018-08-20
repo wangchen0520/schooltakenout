@@ -17,10 +17,6 @@ public class MyinfoFragment extends Fragment {
     LinearLayout mPersonalInfo;
     @BindView(R.id.item_1)
     LinearLayout mItem1;
-    @BindView(R.id.item_2)
-    LinearLayout mItem2;
-    @BindView(R.id.item_3)
-    LinearLayout mItem3;
     public static MyinfoFragment newInstance() {
         MyinfoFragment fragment = new MyinfoFragment();
         return fragment;
