@@ -6,10 +6,12 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 
-import com.wy.schooltakenout.Adapter.ArticleAdapter;
-import com.wy.schooltakenout.Data.Article;
+import com.wy.schooltakenout.Adapter.AddressAdapter;
+import com.wy.schooltakenout.Data.Address;
 import com.wy.schooltakenout.R;
 
 import java.util.ArrayList;
@@ -18,59 +20,63 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArticleListActivity extends AppCompatActivity {
+public class AddManageActivity extends AppCompatActivity {
+
+    private String TAG=this.getClass().getName();
+
+    //地址列表和适配器
+    private List<Address> addressList=new ArrayList<>();
+    private AddressAdapter adapter;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    /**
-     * 具体分类文章列表和适配器
-     */
-    private List<Article> mArticleList=new ArrayList<>();
-    private ArticleAdapter adapter;
-
-    @BindView(R.id.tag_article_list)
-    RecyclerView mRecyclerView;
+    @BindView(R.id.address_list)
+    RecyclerView addList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article_list);
+        setContentView(R.layout.activity_add_manage);
         initView();
     }
 
     private void initView(){
         ButterKnife.bind(this);
-        //处理toolbar的相关逻辑
         setSupportActionBar(mToolbar);
         ActionBar actionBar=getSupportActionBar();
         if(actionBar!=null){
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        //处理文章列表相关逻辑
+        initAddresses();
         GridLayoutManager layoutManager=new GridLayoutManager(this,1);
-        initArticles();
-        mRecyclerView.setLayoutManager(layoutManager);
-        adapter=new ArticleAdapter(mArticleList);
-        mRecyclerView.setAdapter(adapter);
+        addList.setLayoutManager(layoutManager);
+        adapter=new AddressAdapter(addressList);
+        addList.setAdapter(adapter);
     }
 
-    /**
-     * 初始化文章数据
-     */
-    private void initArticles(){
-        Article article=new Article("重庆火锅","是大红大红的假按揭放假啊打开多久啊大的煎熬大口大口的煎熬的卡卡大大的骄傲扩大",
-                R.drawable.ic_avatar,"三天前");
-        mArticleList.clear();
-        for(int i=0;i<10;i++){
-            mArticleList.add(article);
+    //初始化地址列表数据
+    private void initAddresses(){
+        addressList.clear();
+        Address address=new Address("汪浩","17796203147","四川大学江安校区文科楼三区B1025");
+        for(int i=0;i<5;i++){
+            addressList.add(address);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.address_manage_toolbar,menu);
+        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:finish();break;
+            case R.id.add:
+                Log.d(TAG,"添加新地址");
+                break;
             default:
         }
         return true;

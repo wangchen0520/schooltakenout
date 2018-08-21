@@ -18,7 +18,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ArticleListActivity extends AppCompatActivity {
+public class CollectionActivity extends AppCompatActivity {
+
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -29,13 +30,13 @@ public class ArticleListActivity extends AppCompatActivity {
     private List<Article> mArticleList=new ArrayList<>();
     private ArticleAdapter adapter;
 
-    @BindView(R.id.tag_article_list)
+    @BindView(R.id.collection_list)
     RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_article_list);
+        setContentView(R.layout.activity_collection);
         initView();
     }
 
