@@ -1,8 +1,6 @@
 package com.wy.schooltakenout.BottomNavition;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.wy.schooltakenout.Adapter.StoreAdapter;
 import com.wy.schooltakenout.Data.Store;
@@ -41,15 +40,20 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private RecyclerView storeView;
     private List<Store> storeList;
+    private List<String> storeTags;
 
     private void init(View view) {
+        //初始化组件
+        RecyclerView storeView;
+        EditText searchView;
+        //连接布局中的组件
         storeView = view.findViewById(R.id.store_view);
-
+        searchView = (EditText)view.findViewById(R.id.edit_search);
+        searchView.clearFocus();
         //添加一些商店数据用于测试
         storeList = new ArrayList<>();
-        List<String> storeTags = new ArrayList<>();
+        storeTags = new ArrayList<>();
         storeTags.add("不好吃");
         storeTags.add("冷饮");
         storeList.clear();

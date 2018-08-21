@@ -24,8 +24,7 @@
 			android:id="@+id/store_name"
 			android:layout_width="wrap_content"
 			android:layout_height="24dp"
-			android:layout_toRightOf="@id/store_img"
-			android:layout_marginLeft="8dp"
+			android:layout_toEndOf="@id/store_img"
 			android:text="食堂"
 			android:textColor="#000000"
 			android:textSize="18sp"/>
@@ -35,10 +34,9 @@
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
 			android:layout_below="@id/store_name"
-			android:layout_toRightOf="@id/store_img"
+			android:layout_toEndOf="@id/store_img"
 			android:layout_alignBottom="@id/store_img"
 			android:layout_marginTop="4dp"
-			android:layout_marginRight="56dp"
 			android:orientation="horizontal">
 			<ImageView
 				android:layout_width="wrap_content"
