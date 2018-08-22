@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.support.v7.widget.Toolbar;
 
 import com.wy.schooltakenout.Adapter.FoodAdapter;
 import com.wy.schooltakenout.Data.Food;
@@ -64,17 +66,35 @@ public class StoreActivity extends AppCompatActivity {
         final TextView totalPriceView = findViewById(R.id.buy_total_price);
         final TextView feeView = findViewById(R.id.buy_fee);
         ImageButton buyButton = findViewById(R.id.buy);
+        Toolbar toolbar = findViewById(R.id.store_toolbar);
+        //将Toolbar上标题改为商店名并添加回退按钮，实现回退功能
+        toolbar.setTitle(storeName);
+        setSupportActionBar(toolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        } else {
+            Toast.makeText(this, "没有toolbar", Toast.LENGTH_SHORT);
+        }
         //使用传输的数据进行构件的初始化赋值
         imageView.setImageResource(storeImg);
         nameView.setText(storeName);
         totalPriceView.setText(new DecimalFormat("0.00").format(0.00));
         String fee = new DecimalFormat("0.00").format(2.00);
         feeView.setText("配送费"+fee);
+        //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
+        DisplayMetrics metric = getResources().getDisplayMetrics();
+        double ddpi = metric.densityDpi / 160.0;
         //添加tag栏
         for(String storeTag: storeTags) {
             TextView tagView = new TextView(this);
-            tagView.setWidth(140);
-            tagView.setHeight(70);
+            tagView.setWidth((int) (tagsLayout.getMeasuredHeight() * 2 * ddpi));
+            tagView.setHeight((int) (tagsLayout.getMeasuredHeight() * ddpi));
             tagView.setText(storeTag);
             tagView.setTextSize(10);
             tagView.setGravity(Gravity.CENTER);
@@ -110,7 +130,7 @@ public class StoreActivity extends AppCompatActivity {
                 foodAdapter.notifyDataSetChanged();
                 //计算并显示总费用
                 totalPrice += thisFood.getFoodPrice();
-                totalPriceView.setText(new DecimalFormat("0.00").format(totalPrice));
+                totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
             }
 
             @Override
@@ -122,7 +142,7 @@ public class StoreActivity extends AppCompatActivity {
                     foodAdapter.notifyDataSetChanged();
                     //计算并显示总费用
                     totalPrice -= thisFood.getFoodPrice();
-                    totalPriceView.setText(new DecimalFormat("0.00").format(totalPrice));
+                    totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
                 }
             }
         });
@@ -132,8 +152,13 @@ public class StoreActivity extends AppCompatActivity {
         buyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String totalPriceString = new DecimalFormat("0.00").format(totalPrice+2.00);
-                Toast.makeText(StoreActivity.this, "总价格为"+totalPriceString+"，提交成功", Toast.LENGTH_SHORT).show();
+                if(totalPrice - 0 < 0.001) {
+                    Toast.makeText(StoreActivity.this, "(#`O′)还什么都没买呢！", Toast.LENGTH_SHORT).show();
+                } else {
+                    String totalPriceString = new DecimalFormat("0.00").format(totalPrice+2.00);
+                    Toast.makeText(StoreActivity.this, "总价格为"+totalPriceString+"，提交成功", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             }
         });
     }
