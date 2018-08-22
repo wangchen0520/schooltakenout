@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.HomePage.StoreActivity;
 import com.wy.schooltakenout.R;
 
 import java.util.List;
@@ -65,11 +68,14 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 		Glide.with(context).load(store.getStoreImg()).into(holder.storeImage);
 		//防止标签重复生成
         holder.storeTags.removeAllViews();
+        //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
+        DisplayMetrics metric = context.getResources().getDisplayMetrics();
+        double ddpi = metric.densityDpi / 160.0;
         //动态添加标签
 		for(String storeTag: store.getStoreTags()) {
 			TextView tagView = new TextView(context);
-			tagView.setWidth(140);
-			tagView.setHeight(70);
+			tagView.setWidth((int) (holder.storeTags.getMeasuredHeight() * 2 * ddpi));
+            tagView.setHeight((int) (holder.storeTags.getMeasuredHeight() * ddpi));
 			tagView.setText(storeTag);
 			tagView.setTextSize(10);
 			tagView.setGravity(Gravity.CENTER);
