@@ -177,6 +177,8 @@ public class CartAdapter extends RecyclerView.Adapter {
     public void deleteStore(int position) {
         do {
             chosenList.remove(position);
+            if(chosenList.size() == position)
+                break;
         } while (!(chosenList.get(position) instanceof Store));
         notifyDataSetChanged();
     }
