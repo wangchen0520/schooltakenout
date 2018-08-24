@@ -51,10 +51,10 @@
 		android:background="#ffffff"/>
 
 	<android.support.v7.widget.RecyclerView
+		android:id="@+id/store_view"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_below="@id/text_home_title"
-		android:id="@+id/store_view"/>
+		android:layout_below="@id/text_home_title"/>
 
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/shopping_cart"
@@ -67,7 +67,6 @@
 		android:clickable="true"
 		app:backgroundTint="@android:color/white"
 		app:srcCompat="@drawable/ic_shopping_cart"
-		android:scaleType="center"
-		/>
+		android:scaleType="center"/>
 
 </RelativeLayout>

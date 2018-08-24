@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.wy.schooltakenout.Adapter.FoodAdapter;
+import com.wy.schooltakenout.BottomNavition.HomeFragment;
 import com.wy.schooltakenout.Data.Food;
 import com.wy.schooltakenout.R;
 
@@ -36,28 +37,36 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     //进行点餐所需的数据
-    int[] num;
-    double totalPrice;
+    private int[] chosenNum;
+    private double totalPrice;
+    private Intent intent;
+    private int storeNum;
 
     //进行初始化操作
     private void init() {
-        num = new int[100];
-        totalPrice = 0.0;
-        Intent intent = getIntent();
+        chosenNum = new int[100];
+        totalPrice = 0.00;
+        intent = getIntent();
 
         //获取传输过来的商店数据
         String storeName = intent.getStringExtra("name");
         int storeImg = intent.getIntExtra("img", 0);
         List<String> storeTags = intent.getStringArrayListExtra("tags");
+        int storeNo = HomeFragment.storeNo;
+        storeNum = intent.getIntExtra("storeNum", 0);
+        chosenNum = intent.getIntArrayExtra("chosenFood"+storeNo);
+
         //添加一些美食数据用于测试
+        foodNum = 5;
         final List<Food> foodList = new ArrayList<>();
         String foodName = "泡椒风爪";
         int foodImg = R.drawable.ic_food;
         final double foodPrice = 5.60;
-        for(int i=0; i<5; i++) {
-            Food food = new Food(foodName+i, storeName, foodImg, foodPrice, 0);
+        for(int i=0; i<foodNum; i++) {
+            Food food = new Food(foodName+i, storeName, foodImg, foodPrice, chosenNum[i]);
             foodList.add(food);
         }
+
         //获取布局中的构件
         ImageView imageView = findViewById(R.id.store_img);
         TextView nameView = findViewById(R.id.store_name);
@@ -75,16 +84,19 @@ public class StoreActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    back();
                 }
             });
-        } else {
-            Toast.makeText(this, "没有toolbar", Toast.LENGTH_SHORT);
         }
+
         //使用传输的数据进行构件的初始化赋值
         imageView.setImageResource(storeImg);
         nameView.setText(storeName);
-        totalPriceView.setText(new DecimalFormat("0.00").format(0.00));
+        //使用传过来的数据计算已选美食的总价格
+        for(int i=0; i<foodNum; i++) {
+            totalPrice += chosenNum[i] * foodList.get(i).getFoodPrice();
+        }
+        totalPriceView.setText(new DecimalFormat("0.00").format(totalPrice));
         String fee = new DecimalFormat("0.00").format(2.00);
         feeView.setText("配送费"+fee);
         //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
@@ -101,6 +113,7 @@ public class StoreActivity extends AppCompatActivity {
             tagView.setBackground(this.getResources().getDrawable(R.drawable.ic_tag));
             tagsLayout.addView(tagView);
         }
+
         //添加美食数据
         //必要，但是不知道有什么用
         GridLayoutManager foodLayoutManager=new GridLayoutManager(this,1);
@@ -124,9 +137,9 @@ public class StoreActivity extends AppCompatActivity {
 
             @Override
             public void onClickAdd(View view, int position, Food thisFood) {
-                num[position]++;
+                chosenNum[position]++;
                 Toast.makeText(StoreActivity.this, "买了一个"+thisFood.getFoodName(), Toast.LENGTH_SHORT).show();
-                thisFood.setFoodNum(num[position]);
+                thisFood.setFoodNum(chosenNum[position]);
                 foodAdapter.notifyDataSetChanged();
                 //计算并显示总费用
                 totalPrice += thisFood.getFoodPrice();
@@ -135,10 +148,10 @@ public class StoreActivity extends AppCompatActivity {
 
             @Override
             public void onClickReduce(View view, int position, Food thisFood) {
-                if(num[position]>0) {
-                    num[position]--;
+                if(chosenNum[position]>0) {
+                    chosenNum[position]--;
                     Toast.makeText(StoreActivity.this, "减了一个"+thisFood.getFoodName(), Toast.LENGTH_SHORT).show();
-                    thisFood.setFoodNum(num[position]);
+                    thisFood.setFoodNum(chosenNum[position]);
                     foodAdapter.notifyDataSetChanged();
                     //计算并显示总费用
                     totalPrice -= thisFood.getFoodPrice();
@@ -157,9 +170,24 @@ public class StoreActivity extends AppCompatActivity {
                 } else {
                     String totalPriceString = new DecimalFormat("0.00").format(totalPrice+2.00);
                     Toast.makeText(StoreActivity.this, "总价格为"+totalPriceString+"，提交成功", Toast.LENGTH_SHORT).show();
-                    finish();
+                    //提交成功后清空选择的项
+                    for(int i=0; i<100; i++) {
+                        chosenNum[i] = 0;
+                    }
+                    back();
                 }
             }
         });
+    }
+
+    //进行回传数据的请求码，同时表示本商店美食数量
+    public static int foodNum = 0;
+    private void back() {
+        Intent intent = new Intent();
+        for(int i=0; i<storeNum; i++) {
+            intent.putExtra("chosenFood"+i, this.intent.getIntArrayExtra("chosenFood"+i));
+        }
+        setResult(foodNum, intent);
+        finish();
     }
 }

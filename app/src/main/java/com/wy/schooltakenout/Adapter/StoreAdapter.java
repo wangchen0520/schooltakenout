@@ -12,11 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Store;
-import com.wy.schooltakenout.HomePage.StoreActivity;
 import com.wy.schooltakenout.R;
 
 import java.util.List;
@@ -24,6 +22,10 @@ import java.util.List;
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 	private Context context;
 	private List<Store> storeList;
+
+    public StoreAdapter(List<Store> storeList){
+        this.storeList=storeList;
+    }
 
 	//用于连接Store列表的项中的各个View
 	static class ViewHolder extends RecyclerView.ViewHolder{
@@ -41,10 +43,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 			storeTags=view.findViewById(R.id.store_tags);
 		}
     }
-
-	public StoreAdapter(List<Store> storeList){
-	    this.storeList=storeList;
-	}
 
 	//初始时调用，连接layout
 	@NonNull

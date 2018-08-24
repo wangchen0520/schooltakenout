@@ -40,12 +40,12 @@
 	<!--android:text="食堂"-->
 
 	<LinearLayout
+		android:id="@+id/store_tags"
 		android:layout_width="match_parent"
 		android:layout_height="40dp"
 		android:layout_below="@id/store_name"
 		android:layout_centerHorizontal="true"
 		android:orientation="horizontal"
-		android:id="@+id/store_tags"
 		android:gravity="center">
 		<TextView
 			android:layout_width="wrap_content"
@@ -53,17 +53,17 @@
 	</LinearLayout>
 
 	<android.support.v7.widget.RecyclerView
+		android:id="@+id/store_foods"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_alignParentStart="true"
 		android:layout_below="@+id/store_tags"
-		android:layout_above="@id/store_buy"
-		android:id="@+id/store_foods"/>
+		android:layout_above="@id/store_buy"/>
 
 	<RelativeLayout
+		android:id="@+id/store_buy"
 		android:layout_width="match_parent"
 		android:layout_height="40dp"
-		android:id="@+id/store_buy"
 		android:layout_alignParentBottom="true"
 		android:background="#68bde1">
 		<TextView

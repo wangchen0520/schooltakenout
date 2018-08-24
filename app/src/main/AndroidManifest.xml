@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
 		<activity android:name=".HomePage.StoreActivity"/>
+		<activity android:name=".HomePage.ShoppingCartActivity"/>
 	</application>
 
 </manifest>
