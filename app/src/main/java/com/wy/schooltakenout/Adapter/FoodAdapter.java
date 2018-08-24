@@ -87,13 +87,13 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             holder.foodAdd.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onClickAdd(holder.itemView, holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
+                    onItemClickListener.onClickAdd(holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
                 }
             });
             holder.foodReduce.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onClickReduce(holder.itemView, holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
+                    onItemClickListener.onClickReduce(holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
                 }
             });
         }
@@ -110,9 +110,9 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 //        //点击进入美食详情界面
 //        void onItemClick(View view, int position, Food thisFood);
         //点击添加美食进行购买
-        void onClickAdd(View view, int position, Food thisFood);
+        void onClickAdd(int position, Food thisFood);
         //点击减少美食
-        void onClickReduce(View view, int position, Food thisFood);
+        void onClickReduce(int position, Food thisFood);
     }
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this.onItemClickListener=onItemClickListener;

@@ -52,7 +52,7 @@ public class StoreActivity extends AppCompatActivity {
         String storeName = intent.getStringExtra("name");
         int storeImg = intent.getIntExtra("img", 0);
         List<String> storeTags = intent.getStringArrayListExtra("tags");
-        int storeNo = HomeFragment.storeNo;
+        int storeNo = intent.getIntExtra("storeNo", 0);
         storeNum = intent.getIntExtra("storeNum", 0);
         chosenNum = intent.getIntArrayExtra("chosenFood"+storeNo);
 
@@ -63,7 +63,7 @@ public class StoreActivity extends AppCompatActivity {
         int foodImg = R.drawable.ic_food;
         final double foodPrice = 5.60;
         for(int i=0; i<foodNum; i++) {
-            Food food = new Food(foodName+i, storeName, foodImg, foodPrice, chosenNum[i]);
+            Food food = new Food(i, foodName+i, storeName, foodImg, foodPrice, chosenNum[i]);
             foodList.add(food);
         }
 
@@ -136,7 +136,7 @@ public class StoreActivity extends AppCompatActivity {
 //            }
 
             @Override
-            public void onClickAdd(View view, int position, Food thisFood) {
+            public void onClickAdd(int position, Food thisFood) {
                 chosenNum[position]++;
                 Toast.makeText(StoreActivity.this, "买了一个"+thisFood.getFoodName(), Toast.LENGTH_SHORT).show();
                 thisFood.setFoodNum(chosenNum[position]);
@@ -147,7 +147,7 @@ public class StoreActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onClickReduce(View view, int position, Food thisFood) {
+            public void onClickReduce(int position, Food thisFood) {
                 if(chosenNum[position]>0) {
                     chosenNum[position]--;
                     Toast.makeText(StoreActivity.this, "减了一个"+thisFood.getFoodName(), Toast.LENGTH_SHORT).show();

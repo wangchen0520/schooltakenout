@@ -1,13 +1,15 @@
 package com.wy.schooltakenout.Data;
 
 public class Food {
+    private int foodID;
     private String foodName;
     private String storeName;
     private int foodImg;
     private double foodPrice;
     private int foodNum;
 
-    public Food(String foodName, String storeName, int foodImg, double foodPrice, int foodNum) {
+    public Food(int foodID, String foodName, String storeName, int foodImg, double foodPrice, int foodNum) {
+        this.foodID = foodID;
         this.foodName = foodName;
         this.storeName = storeName;
         this.foodImg = foodImg;
@@ -15,9 +17,16 @@ public class Food {
         this.foodNum = foodNum;
     }
 
+    public int getFoodID() {
+        return foodID;
+    }
+
+    public void setFoodID(int foodID) {
+        this.foodID = foodID;
+    }
+
     public String getFoodName() {
         return foodName;
-
     }
 
     public void setFoodName(String foodName) {

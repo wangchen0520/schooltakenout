@@ -1,22 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-	xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-	android:layout_height="wrap_content">
-	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
 		android:id="@+id/store"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:orientation="horizontal">
+		android:orientation="horizontal"
+		android:clickable="true">
 		<ImageView
 			android:id="@+id/store_img"
 			android:layout_width="40dp"
 			android:layout_height="40dp"/>
 		<TextView
 			android:id="@+id/store_name"
-			android:layout_width="match_parent"
+			android:layout_width="wrap_content"
 			android:layout_height="40dp"
+			android:layout_toEndOf="@id/store_img"
 			android:textSize="30sp"
 			android:text="哈哈哈"/>
-	</LinearLayout>
+		<ImageView
+			android:id="@+id/store_go"
+			android:layout_width="10dp"
+			android:layout_height="20dp"
+			android:layout_toStartOf="@id/store_delete"
+			android:layout_marginTop="10dp"
+			android:layout_marginEnd="50dp"
+			android:src="@drawable/ic_right"
+			android:scaleType="centerInside"/>
+		<ImageButton
+			android:id="@+id/store_delete"
+			android:layout_width="40dp"
+			android:layout_height="40dp"
+			android:layout_alignParentEnd="true"
+			android:src="@drawable/ic_delete"/>
 </RelativeLayout>

@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
         storeTags.add("冷饮");
         storeList.clear();
         for(int i=0; i<storeNum; i++) {
-            Store store = new Store("食堂"+i, R.drawable.ic_store_img, storeTags);
+            Store store = new Store(i, "食堂"+i, R.drawable.ic_store_img, storeTags);
             storeList.add(store);
         }
 
@@ -78,15 +78,15 @@ public class HomeFragment extends Fragment {
         StoreAdapter storeAdapter = new StoreAdapter(storeList);
         storeAdapter.setOnItemClickListener(new StoreAdapter.OnItemClickListener() {
             @Override
-            public void onClick(View view, int position, Store thisStore) {
+            public void onClick(int position, Store thisStore) {
                 //以该商店的编号作为请求码
                 storeNo = position;
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(getActivity(), StoreActivity.class);
-                Store store = storeList.get(position);
-                intent.putExtra("name", store.getStoreName());
-                intent.putExtra("img",  store.getStoreImg());
-                intent.putExtra("tags", (ArrayList<String>) store.getStoreTags());
+                intent.putExtra("name", thisStore.getStoreName());
+                intent.putExtra("img",  thisStore.getStoreImg());
+                intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
+                intent.putExtra("storeNo", thisStore.getStoreID());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("storeNum", storeNum);
                 for(int i=0; i<storeNum; i++) {

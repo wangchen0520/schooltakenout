@@ -86,7 +86,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
             holder.itemView.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                	onItemClickListener.onClick(holder.itemView, holder.getAdapterPosition(), storeList.get(holder.getAdapterPosition()));
+                	onItemClickListener.onClick(holder.getAdapterPosition(), storeList.get(holder.getAdapterPosition()));
                 }
             });
         }
@@ -100,7 +100,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 	//设置点击响应
     private OnItemClickListener onItemClickListener;
     public interface OnItemClickListener{
-        void onClick(View view, int position, Store thisStore);
+        void onClick(int position, Store thisStore);
     }
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this.onItemClickListener=onItemClickListener;
