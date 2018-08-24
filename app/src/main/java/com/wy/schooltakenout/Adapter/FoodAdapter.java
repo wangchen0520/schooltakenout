@@ -22,7 +22,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     private Context context;
     private List<Food> foodList;
 
-    //用于连接Store列表的项中的各个View
+    //用于连接Food列表的项中的各个View
     static class ViewHolder extends RecyclerView.ViewHolder{
         CardView foodView;
         ImageView foodImage;
@@ -70,7 +70,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         holder.foodName.setText(food.getFoodName());
         holder.foodPrice.setText(new DecimalFormat("0.00").format(food.getFoodPrice()));
         if(food.getFoodNum() != 0) {
-            holder.foodNum.setText(new DecimalFormat("0").format(food.getFoodNum()));
+            holder.foodNum.setText(food.getFoodNum()+"");
         } else {
             holder.foodNum.setText("");
         }

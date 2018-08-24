@@ -29,23 +29,29 @@ public class CartAdapter extends RecyclerView.Adapter {
     public CartAdapter(int[][] chosenFood, int storeNum) {
         //找出点过菜的商家，将购物车信息按顺序排列为List<Object>
         chosenList = new ArrayList<>();
-        double foodPrice = 5.60;
+        //测试数据
         List<String> storeTags = new ArrayList<>();
         storeTags.add("不好吃");
         storeTags.add("冷饮");
+
         List<Food> storeFood = new ArrayList<>();
         int flag;
         for(int i=0; i<storeNum; i++) {
             flag = 0;
+            Store store;
+            //测试数据
+            store = new Store(i, "食堂"+i, R.drawable.ic_store_img, storeTags, i+1, 2.00);
+
             storeFood.clear();
-            for(int j=0; j<100; j++) {
+            for(int j=0; j<store.getStoreFoodNum(); j++) {
                 if(chosenFood[i][j] != 0) {
                     flag = 1;
-                    storeFood.add(new Food(j, "泡椒风爪"+j, "食堂"+i, R.drawable.ic_food, foodPrice, chosenFood[i][j]));
+                    Food food = new Food(j, "泡椒风爪"+j, "食堂"+i, R.drawable.ic_food, 5.60, chosenFood[i][j]);
+                    storeFood.add(food);
                 }
             }
             if(flag == 1) {
-                chosenList.add(new Store(i, "食堂"+i, R.drawable.ic_store_img, storeTags));
+                chosenList.add(store);
                 chosenList.addAll(storeFood);
             }
         }
@@ -121,7 +127,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                 viewHolderStore.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemClickListener.onClick(store);
+                        onItemClickListener.onClick(holder.getAdapterPosition(), store);
                     }
                 });
                 viewHolderStore.storeDelete.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +142,7 @@ public class CartAdapter extends RecyclerView.Adapter {
             Food food = (Food) chosenList.get(position);
 
             Glide.with(context).load(food.getFoodImg()).into(viewHolderFood.foodImage);
-            viewHolderFood.foodName.setText(food.getFoodName()+"");
+            viewHolderFood.foodName.setText(food.getFoodName());
             String foodPrice = new DecimalFormat("0.00").format(food.getFoodPrice());
             viewHolderFood.foodPrice.setText(foodPrice);
             viewHolderFood.foodNum.setText(food.getFoodNum()+"");
@@ -165,7 +171,7 @@ public class CartAdapter extends RecyclerView.Adapter {
     //设置点击响应
     private OnItemClickListener onItemClickListener;
     public interface OnItemClickListener{
-        void onClick(Store thisStore);
+        void onClick(int position, Store thisStore);
         //position为所删除的商店View所在位置
         void onClickDelete(int position, Store thisStore);
     }
@@ -173,13 +179,52 @@ public class CartAdapter extends RecyclerView.Adapter {
         this.onItemClickListener=onItemClickListener;
     }
 
-    //动态删除商家
+    //动态删除商家，position为删除的商家View位置
     public void deleteStore(int position) {
         do {
             chosenList.remove(position);
             if(chosenList.size() == position)
                 break;
         } while (!(chosenList.get(position) instanceof Store));
+        //保险起见，再刷新一遍
         notifyDataSetChanged();
+    }
+
+    //动态改变商家中选择的美食变化，position为添加的商家View位置
+    public void changeFood(int position, int storeNo, int[] changedFoods) {
+        Store store;
+        //测试数据
+        List<String> storeTags = new ArrayList<>();
+        storeTags.add("不好吃");
+        storeTags.add("冷饮");
+        store = new Store(storeNo, "食堂" + storeNo, R.drawable.ic_store_img, storeTags, storeNo+1, 2.00);
+
+        //先删除
+        deleteStore(position);
+        //再判断是否需要添加
+        int flag = 0;
+        List<Object> changedList = new ArrayList<>();
+
+        for(int i=0; i<store.getStoreFoodNum(); i++) {
+            if (changedFoods[i] != 0) {
+                flag = 1;
+                changedList.add(store);
+                break;
+            }
+        }
+        if(flag == 1) {
+            for(int i=0; i<store.getStoreFoodNum(); i++) {
+                if(changedFoods[i] != 0) {
+                    Food food;
+                    //测试数据
+                    food = new Food(i, "泡椒风爪"+i, "食堂"+i, R.drawable.ic_food, 5.60, changedFoods[i]);
+
+                    changedList.add(food);
+                }
+            }
+            chosenList.addAll(position, changedList);
+            //保险起见，再刷新一遍
+            notifyDataSetChanged();
+        }
     }
 }

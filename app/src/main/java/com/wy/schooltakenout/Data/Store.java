@@ -8,12 +8,16 @@ public class Store {
 	private String storeName;
 	private int storeImg;
 	private List<String> storeTags;
+	private int storeFoodNum;
+	private double storeFee;
 
-	public Store(int storeID, String storeName, int storeImg, List<String> storeTags) {
+	public Store(int storeID, String storeName, int storeImg, List<String> storeTags, int storeFoodNum, double storeFee) {
 	    this.storeID = storeID;
 		this.storeName = storeName;
 		this.storeImg = storeImg;
 		this.storeTags = storeTags;
+		this.storeFoodNum = storeFoodNum;
+		this.storeFee = storeFee;
 	}
 
     public int getStoreID() {
@@ -47,4 +51,20 @@ public class Store {
 	public void setStoreTags(List<String> storeTags) {
 		this.storeTags = storeTags;
 	}
+
+    public int getStoreFoodNum() {
+        return storeFoodNum;
+    }
+
+    public void setStoreFoodNum(int storeFoodNum) {
+        this.storeFoodNum = storeFoodNum;
+    }
+
+    public double getStoreFee() {
+        return storeFee;
+    }
+
+    public void setStoreFee(double storeFee) {
+        this.storeFee = storeFee;
+    }
 }

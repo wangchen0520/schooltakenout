@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import com.wy.schooltakenout.Adapter.FoodAdapter;
 import com.wy.schooltakenout.BottomNavition.HomeFragment;
 import com.wy.schooltakenout.Data.Food;
+import com.wy.schooltakenout.Data.Store;
 import com.wy.schooltakenout.R;
 
 import java.text.DecimalFormat;
@@ -37,10 +38,11 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     //进行点餐所需的数据
+    private Intent intent;
+    private Store thisStore;
+    private int storeNum;
     private int[] chosenNum;
     private double totalPrice;
-    private Intent intent;
-    private int storeNum;
 
     //进行初始化操作
     private void init() {
@@ -52,18 +54,21 @@ public class StoreActivity extends AppCompatActivity {
         String storeName = intent.getStringExtra("name");
         int storeImg = intent.getIntExtra("img", 0);
         List<String> storeTags = intent.getStringArrayListExtra("tags");
+        int storeFoodNum = intent.getIntExtra("storeFoodNum", 0);
         int storeNo = intent.getIntExtra("storeNo", 0);
+        double storeFee = intent.getDoubleExtra("storeFee", 0.00);
+        thisStore = new Store(storeNo, storeName, storeImg, storeTags, storeFoodNum, storeFee);
+
         storeNum = intent.getIntExtra("storeNum", 0);
         chosenNum = intent.getIntArrayExtra("chosenFood"+storeNo);
 
-        //添加一些美食数据用于测试
-        foodNum = 5;
+        //添加商店的美食数据
         final List<Food> foodList = new ArrayList<>();
-        String foodName = "泡椒风爪";
-        int foodImg = R.drawable.ic_food;
-        final double foodPrice = 5.60;
-        for(int i=0; i<foodNum; i++) {
-            Food food = new Food(i, foodName+i, storeName, foodImg, foodPrice, chosenNum[i]);
+        for(int i=0; i<storeFoodNum; i++) {
+            Food food;
+            //测试数据
+            food = new Food(i, "泡椒风爪"+i, storeName, R.drawable.ic_food, 5.60, chosenNum[i]);
+
             foodList.add(food);
         }
 
@@ -93,12 +98,13 @@ public class StoreActivity extends AppCompatActivity {
         imageView.setImageResource(storeImg);
         nameView.setText(storeName);
         //使用传过来的数据计算已选美食的总价格
-        for(int i=0; i<foodNum; i++) {
+        for(int i=0; i<storeFoodNum; i++) {
             totalPrice += chosenNum[i] * foodList.get(i).getFoodPrice();
         }
         totalPriceView.setText(new DecimalFormat("0.00").format(totalPrice));
-        String fee = new DecimalFormat("0.00").format(2.00);
-        feeView.setText("配送费"+fee);
+
+        String feeString = "配送费"+(new DecimalFormat("0.00").format(thisStore.getStoreFee()));
+        feeView.setText(feeString);
         //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
         DisplayMetrics metric = getResources().getDisplayMetrics();
         double ddpi = metric.densityDpi / 160.0;
@@ -168,10 +174,11 @@ public class StoreActivity extends AppCompatActivity {
                 if(totalPrice - 0 < 0.001) {
                     Toast.makeText(StoreActivity.this, "(#`O′)还什么都没买呢！", Toast.LENGTH_SHORT).show();
                 } else {
-                    String totalPriceString = new DecimalFormat("0.00").format(totalPrice+2.00);
+                    String totalPriceString = new DecimalFormat("0.00").format(totalPrice+thisStore.getStoreFee());
                     Toast.makeText(StoreActivity.this, "总价格为"+totalPriceString+"，提交成功", Toast.LENGTH_SHORT).show();
                     //提交成功后清空选择的项
-                    for(int i=0; i<100; i++) {
+                    //测试数据
+                    for(int i=0; i<thisStore.getStoreFoodNum(); i++) {
                         chosenNum[i] = 0;
                     }
                     back();
@@ -180,14 +187,14 @@ public class StoreActivity extends AppCompatActivity {
         });
     }
 
-    //进行回传数据的请求码，同时表示本商店美食数量
-    public static int foodNum = 0;
+    //进行回传数据的请求码
+    public static int resultCode = 100;
     private void back() {
         Intent intent = new Intent();
         for(int i=0; i<storeNum; i++) {
             intent.putExtra("chosenFood"+i, this.intent.getIntArrayExtra("chosenFood"+i));
         }
-        setResult(foodNum, intent);
+        setResult(resultCode, intent);
         finish();
     }
 }

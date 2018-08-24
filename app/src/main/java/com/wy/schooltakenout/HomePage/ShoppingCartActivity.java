@@ -24,6 +24,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     private int storeNum;
     private int[][] chosenFood;
     private Intent intent;
+    private CartAdapter cartAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,12 +50,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
             });
         }
 
-        //用上一页面传来的数据提取Store的信息
+        //用上一页面传来的数据提取点菜的信息
         intent = getIntent();
         storeNum = intent.getIntExtra("storeNum", 0);
         chosenFood = new int[storeNum][100];
         for(int i=0; i<storeNum; i++) {
-            for(int j=0; j<100; j++) {
+            //测试数据
+            for(int j=0; j<i+1; j++) {
+
                 chosenFood[i][j] = intent.getIntArrayExtra("chosenFood"+i)[j];
             }
         }
@@ -63,23 +66,27 @@ public class ShoppingCartActivity extends AppCompatActivity {
         GridLayoutManager foodLayoutManager=new GridLayoutManager(this,1);
         cartList.setLayoutManager(foodLayoutManager);
         //为cartList添加适配器
-        final CartAdapter cartAdapter = new CartAdapter(chosenFood, storeNum);
+        cartAdapter = new CartAdapter(chosenFood, storeNum);
         //为适配器添加点击事件
         cartAdapter.setOnItemClickListener(new CartAdapter.OnItemClickListener() {
             @Override
-            public void onClick(Store thisStore) {
+            public void onClick(int position, Store thisStore) {
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(ShoppingCartActivity.this, StoreActivity.class);
+                intent.putExtra("storeNo", thisStore.getStoreID());
                 intent.putExtra("name", thisStore.getStoreName());
                 intent.putExtra("img",  thisStore.getStoreImg());
                 intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
-                intent.putExtra("storeNo", thisStore.getStoreID());
+                intent.putExtra("storeFoodNum", thisStore.getStoreFoodNum());
+                intent.putExtra("storeFee", thisStore.getStoreFee());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("storeNum", storeNum);
                 for(int i=0; i<storeNum; i++) {
                     intent.putExtra("chosenFood"+i, chosenFood[i]);
                 }
-                startActivityForResult(intent, thisStore.getStoreID());
+                viewPosition = position;
+                storeNo = thisStore.getStoreID();
+                startActivityForResult(intent, position);
             }
 
             @Override
@@ -90,7 +97,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for(int i=0; i<100; i++) {
+                                for(int i=0; i<thisStore.getStoreFoodNum(); i++) {
                                     chosenFood[thisStore.getStoreID()][i] = 0;
                                 }
                                 cartAdapter.deleteStore(position);
@@ -112,5 +119,28 @@ public class ShoppingCartActivity extends AppCompatActivity {
         }
         setResult(resultCode, intent);
         finish();
+    }
+
+    //返回的数据，viewPosition为点击的商店所在位置，同时作为请求码
+    private int viewPosition;
+    private int storeNo;
+    @Override
+    public void onActivityResult(int position, int resultCode, Intent data) {
+        if(position==viewPosition&&(resultCode==StoreActivity.resultCode)){
+            //data是上一个Activity调用setResult方法时传递过来的Intent
+            //应该用storeNo来找到生成store，得到storeFoodNum
+            int storeFoodNum;
+
+            for(int i=0; i<storeNum; i++) {
+                //测试数据
+                storeFoodNum = i+1;
+
+                for(int j=0; j<storeFoodNum; j++) {
+                    chosenFood[i][j] = data.getIntArrayExtra("chosenFood"+i)[j];
+                }
+            }
+            //对改变的美食在页面上进行刷新
+            cartAdapter.changeFood(position, storeNo, chosenFood[storeNo]);
+        }
     }
 }
