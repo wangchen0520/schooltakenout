@@ -1,53 +1,35 @@
 package com.wy.schooltakenout.HomePage;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.wy.schooltakenout.Adapter.CartAdapter;
+import com.wy.schooltakenout.Adapter.SearchAdapter;
 import com.wy.schooltakenout.Data.Store;
 import com.wy.schooltakenout.R;
 
 import java.util.ArrayList;
 
-public class ShoppingCartActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
     private int storeNum;
     private int[][] chosenFood;
-    private CartAdapter cartAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.shopping_cart_activity);
+        setContentView(R.layout.search_activity);
         init();
     }
 
     private void init() {
-        //获取布局中的控件
-        Toolbar toolbar = findViewById(R.id.cart_toolbar);
-        RecyclerView cartList = findViewById(R.id.cart_list);
-
-        //在Toolbar上添加回退按钮
-        setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    back();
-                }
-            });
-        }
-
-        //用上一页面传来的数据提取点菜的信息
+        //获取传来的数据
         Intent intent = getIntent();
+        String searchString = intent.getStringExtra("searchString");
         storeNum = intent.getIntExtra("storeNum", 0);
         chosenFood = new int[storeNum][100];
         for(int i=0; i<storeNum; i++) {
@@ -58,17 +40,33 @@ public class ShoppingCartActivity extends AppCompatActivity {
             }
         }
 
+        //获取布局中的组件
+        Toolbar searchToolbar = findViewById(R.id.search_toolbar);
+        RecyclerView searchList = findViewById(R.id.search_list);
+
+        //Toolbar上更改标题并添加回退按钮
+        searchToolbar.setTitle("搜索内容："+searchString);
+        setSupportActionBar(searchToolbar);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            searchToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    back();
+                }
+            });
+        }
+
         //必要，但是不知道有什么用
         GridLayoutManager foodLayoutManager=new GridLayoutManager(this,1);
-        cartList.setLayoutManager(foodLayoutManager);
-        //为cartList添加适配器
-        cartAdapter = new CartAdapter(chosenFood, storeNum);
-        //为适配器添加点击事件
-        cartAdapter.setOnItemClickListener(new CartAdapter.OnItemClickListener() {
+        searchList.setLayoutManager(foodLayoutManager);
+        //设置适配器，并设置点击事件
+        SearchAdapter searchAdapter = new SearchAdapter(searchString, storeNum, chosenFood);
+        searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position, Store thisStore) {
                 //进行页面跳转并传递商店数据和购买过的数据
-                Intent intent = new Intent(ShoppingCartActivity.this, StoreActivity.class);
+                Intent intent = new Intent(SearchActivity.this, StoreActivity.class);
                 intent.putExtra("storeNo", thisStore.getStoreID());
                 intent.putExtra("name", thisStore.getStoreName());
                 intent.putExtra("img",  thisStore.getStoreImg());
@@ -81,33 +79,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     intent.putExtra("chosenFood"+i, chosenFood[i]);
                 }
                 viewPosition = position;
-                storeNo = thisStore.getStoreID();
                 startActivityForResult(intent, position);
             }
-
-            @Override
-            public void onClickDelete(final int position, final Store thisStore) {
-                new AlertDialog.Builder(ShoppingCartActivity.this)
-                        .setTitle("删除这个商店的美食")
-                        .setMessage("是否确定")
-                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                for(int i=0; i<thisStore.getStoreFoodNum(); i++) {
-                                    chosenFood[thisStore.getStoreID()][i] = 0;
-                                }
-                                cartAdapter.deleteStore(position);
-                            }
-                        })
-                        .setNegativeButton("取消", null)
-                        .show();
-            }
         });
-        cartList.setAdapter(cartAdapter);
+        searchList.setAdapter(searchAdapter);
     }
 
     //进行回传数据的请求码
-    public static int resultCode = 200;
+    public static int resultCode = 300;
     private void back() {
         Intent intent = new Intent();
         for(int i=0; i<storeNum; i++) {
@@ -119,7 +98,6 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
     //返回的数据，viewPosition为点击的商店所在位置，同时作为请求码
     private int viewPosition;
-    private int storeNo;
     @Override
     public void onActivityResult(int position, int resultCode, Intent data) {
         if(position==viewPosition&&(resultCode==StoreActivity.resultCode)){
@@ -135,9 +113,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
                     chosenFood[i][j] = data.getIntArrayExtra("chosenFood"+i)[j];
                 }
             }
-            //对改变的美食在页面上进行刷新
-            cartAdapter.changeFood(position, storeNo, chosenFood[storeNo]);
         }
+        back();
     }
 
     //覆写按下物理回退键的事件

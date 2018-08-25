@@ -2,6 +2,7 @@ package com.wy.schooltakenout.BottomNavition;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.wy.schooltakenout.Adapter.StoreAdapter;
 import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.HomePage.SearchActivity;
 import com.wy.schooltakenout.HomePage.ShoppingCartActivity;
 import com.wy.schooltakenout.HomePage.StoreActivity;
 import com.wy.schooltakenout.R;
@@ -37,14 +39,13 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.home_fragment, container, false);
         init(view);
         return view;
     }
 
-    private List<Store> storeList;
     private int[][] shoppingFood;
     //测试数据
     private int storeNum = 10;
@@ -57,9 +58,11 @@ public class HomeFragment extends Fragment {
         FloatingActionButton shoppingCart = view.findViewById(R.id.shopping_cart);
 
         //一开始不打开软键盘
-        this.getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        if(this.getActivity() != null) {
+            this.getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
 
-        storeList = new ArrayList<>();
+        List<Store> storeList = new ArrayList<>();
         storeList.clear();
         Store store;
         //测试数据
@@ -82,7 +85,13 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String searchText = searchView.getText().toString();
-                Toast.makeText(getActivity(), "您输入了"+searchText, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                intent.putExtra("searchString", searchText);
+                intent.putExtra("storeNum", storeNum);
+                for(int i=0; i<storeNum; i++) {
+                    intent.putExtra("chosenFood"+i, shoppingFood[i]);
+                }
+                startActivityForResult(intent, requestCode);
             }
         });
 
@@ -130,7 +139,7 @@ public class HomeFragment extends Fragment {
     private static int requestCode = 100;
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==HomeFragment.requestCode&&(resultCode==StoreActivity.resultCode||resultCode==ShoppingCartActivity.resultCode)){
+        if(requestCode==HomeFragment.requestCode){
             //data是上一个Activity调用setResult方法时传递过来的Intent
             for(int i=0; i<storeNum; i++) {
                 //这里应该用i获得该Store，来获得storeFoodNum

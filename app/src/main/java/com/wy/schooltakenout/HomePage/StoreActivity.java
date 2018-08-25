@@ -18,7 +18,6 @@ import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 
 import com.wy.schooltakenout.Adapter.FoodAdapter;
-import com.wy.schooltakenout.BottomNavition.HomeFragment;
 import com.wy.schooltakenout.Data.Food;
 import com.wy.schooltakenout.Data.Store;
 import com.wy.schooltakenout.R;
@@ -144,7 +143,6 @@ public class StoreActivity extends AppCompatActivity {
             @Override
             public void onClickAdd(int position, Food thisFood) {
                 chosenNum[position]++;
-                Toast.makeText(StoreActivity.this, "买了一个"+thisFood.getFoodName(), Toast.LENGTH_SHORT).show();
                 thisFood.setFoodNum(chosenNum[position]);
                 foodAdapter.notifyDataSetChanged();
                 //计算并显示总费用
@@ -156,7 +154,6 @@ public class StoreActivity extends AppCompatActivity {
             public void onClickReduce(int position, Food thisFood) {
                 if(chosenNum[position]>0) {
                     chosenNum[position]--;
-                    Toast.makeText(StoreActivity.this, "减了一个"+thisFood.getFoodName(), Toast.LENGTH_SHORT).show();
                     thisFood.setFoodNum(chosenNum[position]);
                     foodAdapter.notifyDataSetChanged();
                     //计算并显示总费用
@@ -196,5 +193,11 @@ public class StoreActivity extends AppCompatActivity {
         }
         setResult(resultCode, intent);
         finish();
+    }
+
+    //覆写按下物理回退键的事件
+    @Override
+    public void onBackPressed() {
+        back();
     }
 }
