@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.wy.schooltakenout.Adapter.StoreAdapter;
 import com.wy.schooltakenout.Data.Store;
@@ -49,7 +51,8 @@ public class HomeFragment extends Fragment {
 
     private void init(View view) {
         //获取布局中的组件
-        EditText searchView = view.findViewById(R.id.edit_search);
+        final EditText searchView = view.findViewById(R.id.edit_search);
+        ImageButton searchButton = view.findViewById(R.id.imageButton_search);
         RecyclerView storeView = view.findViewById(R.id.store_view);
         FloatingActionButton shoppingCart = view.findViewById(R.id.shopping_cart);
 
@@ -73,6 +76,15 @@ public class HomeFragment extends Fragment {
 
         //初始化购物车
         shoppingFood = new int[storeNum][100];
+
+        //美食搜索部分
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String searchText = searchView.getText().toString();
+                Toast.makeText(getActivity(), "您输入了"+searchText, Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //必要，但是不知道有什么用
         GridLayoutManager storeLayoutManager=new GridLayoutManager(getActivity(),1);

@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Store;
@@ -72,13 +73,13 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
         //动态添加标签
 		for(String storeTag: store.getStoreTags()) {
 			TextView tagView = new TextView(context);
-			tagView.setWidth((int) (holder.storeTags.getMeasuredHeight() * 2 * ddpi));
-            tagView.setHeight((int) (holder.storeTags.getMeasuredHeight() * ddpi));
 			tagView.setText(storeTag);
 			tagView.setTextSize(10);
 			tagView.setGravity(Gravity.CENTER);
 			tagView.setBackground(context.getResources().getDrawable(R.drawable.ic_tag));
 			holder.storeTags.addView(tagView);
+			tagView.getLayoutParams().width = (int) (48 * ddpi);
+			tagView.getLayoutParams().height = (int) (24 * ddpi);
 		}
 
 		//设置点击响应

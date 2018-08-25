@@ -56,16 +56,16 @@
 			android:id="@+id/food_reduce"
 			android:layout_width="20dp"
 			android:layout_height="20dp"
-			android:src="@drawable/ic_reduce"
 			android:layout_alignParentEnd="true"
-			android:layout_alignParentTop="true"/>
+			android:layout_alignParentTop="true"
+			android:background="@drawable/ic_minus"/>
 
 		<ImageButton
 			android:id="@+id/food_add"
 			android:layout_width="20dp"
 			android:layout_height="20dp"
-			android:src="@drawable/ic_add"
 			android:layout_alignParentEnd="true"
-			android:layout_alignBottom="@+id/food_img"/>
+			android:layout_alignBottom="@+id/food_img"
+			android:background="@drawable/ic_plus"/>
 	</RelativeLayout>
 </android.support.v7.widget.CardView>

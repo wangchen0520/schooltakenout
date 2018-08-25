@@ -111,13 +111,13 @@ public class StoreActivity extends AppCompatActivity {
         //添加tag栏
         for(String storeTag: storeTags) {
             TextView tagView = new TextView(this);
-            tagView.setWidth((int) (tagsLayout.getMeasuredHeight() * 2 * ddpi));
-            tagView.setHeight((int) (tagsLayout.getMeasuredHeight() * ddpi));
             tagView.setText(storeTag);
-            tagView.setTextSize(10);
+            tagView.setTextSize(16);
             tagView.setGravity(Gravity.CENTER);
             tagView.setBackground(this.getResources().getDrawable(R.drawable.ic_tag));
             tagsLayout.addView(tagView);
+            tagView.getLayoutParams().width = (int) (80 * ddpi);
+            tagView.getLayoutParams().height = (int) (40 * ddpi);
         }
 
         //添加美食数据

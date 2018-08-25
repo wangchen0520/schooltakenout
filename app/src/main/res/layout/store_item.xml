@@ -18,25 +18,28 @@
 			android:id="@+id/store_img"
 			android:layout_width="48dp"
 			android:layout_height="48dp"
-			android:src="@drawable/ic_avatar"/>
+			android:layout_alignParentStart="true"
+			android:layout_alignParentTop="true"
+			android:src="@drawable/ic_store_img"/>
 
 		<TextView
 			android:id="@+id/store_name"
 			android:layout_width="wrap_content"
 			android:layout_height="24dp"
 			android:layout_toEndOf="@id/store_img"
+			android:layout_alignParentTop="true"
 			android:text="食堂"
 			android:textColor="#000000"
-			android:textSize="18sp"/>
+			android:textSize="18sp"
+			android:gravity="top|start"/>
 
 		<LinearLayout
 			android:id="@+id/store_tags"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="24dp"
 			android:layout_below="@id/store_name"
 			android:layout_toEndOf="@id/store_img"
 			android:layout_alignBottom="@id/store_img"
-			android:layout_marginTop="4dp"
 			android:orientation="horizontal">
 			<ImageView
 				android:layout_width="wrap_content"

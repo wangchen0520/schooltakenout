@@ -36,7 +36,7 @@
 		android:layout_alignTop="@+id/edit_search"
 		android:layout_alignParentEnd="true"
 		android:layout_marginEnd="30dp"
-		app:srcCompat="@drawable/ic_search"/>
+		android:background="@drawable/ic_search"/>
 
 	<TextView
 		android:id="@+id/text_home_title"
@@ -58,15 +58,18 @@
 
 	<android.support.design.widget.FloatingActionButton
 		android:id="@+id/shopping_cart"
-		android:layout_width="50dp"
-		android:layout_height="50dp"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentEnd="true"
 		android:layout_marginBottom="15dp"
 		android:layout_marginEnd="15dp"
+		android:src="@drawable/ic_shopping_cart"
+		app:backgroundTint="#ffffff"
+		app:fabSize="normal"
+		app:elevation="7dp"
+		app:borderWidth="0dp"
 		android:clickable="true"
-		app:backgroundTint="@android:color/white"
-		app:srcCompat="@drawable/ic_shopping_cart"
 		android:scaleType="center"/>
 
 </RelativeLayout>
