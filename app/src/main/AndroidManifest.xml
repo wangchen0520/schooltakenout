@@ -32,9 +32,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.ArticleActivity" />
+      <activity android:name=".Activity.ArticleActivity" />
         <activity android:name=".Activity.EditActivity" />
         <activity android:name=".Activity.ArticleListActivity" />
+        <activity android:name=".Activity.StoreActivity"/>
+		    <activity android:name=".Activity.ShoppingCartActivity"/>
+		    <activity android:name=".Activity.SearchActivity"/>
         <activity
             android:name=".Activity.ModifyInfoActivity"
             android:label="@null"/>
@@ -43,5 +46,6 @@
         <activity android:name=".Activity.AddManageActivity" />
         <activity android:name=".Activity.AboutUsActivity"></activity>
     </application>
+
 
 </manifest>

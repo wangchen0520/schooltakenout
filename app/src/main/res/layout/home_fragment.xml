@@ -1,7 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginBottom="56dp">
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_marginBottom="56dp"
+	android:background="#FFFFFF">
 
-</LinearLayout>
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/home_toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#c0c0c0"
+		app:title="首页"/>
+
+	<EditText
+		android:id="@+id/edit_search"
+		android:layout_width="wrap_content"
+		android:layout_height="40dp"
+		android:layout_alignParentStart="true"
+		android:layout_below="@id/home_toolbar"
+		android:layout_marginStart="30dp"
+		android:layout_marginTop="20dp"
+		android:layout_toStartOf="@id/imageButton_search"
+		android:ems="10"
+		android:inputType="textPersonName"
+		android:hint="请输入美食关键字"
+		android:textSize="17sp"/>
+
+	<ImageButton
+		android:id="@+id/imageButton_search"
+		android:layout_width="40dp"
+		android:layout_height="40dp"
+		android:layout_alignTop="@+id/edit_search"
+		android:layout_alignParentEnd="true"
+		android:layout_marginEnd="30dp"
+		android:background="@drawable/ic_search"/>
+
+	<TextView
+		android:id="@+id/text_home_title"
+		android:text="---- 商家列表 ----"
+		android:textSize="15sp"
+		android:gravity="center"
+		android:layout_width="match_parent"
+		android:layout_height="30dp"
+		android:layout_below="@id/edit_search"
+		android:layout_marginTop="5dp"
+		android:textColor="#000000"
+		android:background="#ffffff"/>
+
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/store_view"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_below="@id/text_home_title"/>
+
+	<android.support.design.widget.FloatingActionButton
+		android:id="@+id/shopping_cart"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentEnd="true"
+		android:layout_marginBottom="15dp"
+		android:layout_marginEnd="15dp"
+		android:src="@drawable/ic_shopping_cart"
+		app:backgroundTint="#ffffff"
+		app:fabSize="normal"
+		app:elevation="7dp"
+		app:borderWidth="0dp"
+		android:clickable="true"
+		android:scaleType="center"/>
+
+</RelativeLayout>
