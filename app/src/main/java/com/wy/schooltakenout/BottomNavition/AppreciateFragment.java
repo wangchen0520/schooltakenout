@@ -1,8 +1,10 @@
 package com.wy.schooltakenout.BottomNavition;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
@@ -12,6 +14,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wy.schooltakenout.Activity.EditActivity;
 import com.wy.schooltakenout.Adapter.ArticleAdapter;
 import com.wy.schooltakenout.Adapter.TagAdapter;
 import com.wy.schooltakenout.Banner.BannerPagerAdapter;
@@ -30,6 +33,11 @@ import butterknife.ButterKnife;
 
 public class AppreciateFragment extends Fragment {
 
+    /**
+     * 添加文章
+     */
+    @BindView(R.id.add_article)
+    FloatingActionButton addArticle;
     /**
      * 标签列表
      */
@@ -140,6 +148,13 @@ public class AppreciateFragment extends Fragment {
     }
     private void initView(View v){
         ButterKnife.bind(this,v);
+        addArticle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(getContext(), EditActivity.class);
+                startActivity(intent);
+            }
+        });
         initArticles();
         initTags();
         GridLayoutManager layoutManager=new GridLayoutManager(getContext(),5);

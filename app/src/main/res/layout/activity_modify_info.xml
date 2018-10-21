@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.ModifyInfoActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:minHeight="?attr/actionBarSize"
+        android:background="#c0c0c0"
+        >
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="个人信息"
+            android:textColor="#000000"
+            android:textSize="18sp" />
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical"
+        android:background="#c0c0c0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolBar">
+
+        <RelativeLayout
+            android:id="@+id/modify_headimage"
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="头像"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:layout_marginStart="20dp"
+                android:layout_centerVertical="true"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/head_image"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/right_1"
+                android:src="@drawable/ic_avatar"
+                android:layout_marginRight="20dp"/>
+
+            <ImageView
+                android:id="@+id/right_1"
+                android:src="@drawable/ic_right"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="15dp"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/petname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="昵称"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:layout_marginStart="20dp"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/name"
+                android:text="sdadadaddad"
+                android:layout_toRightOf="@id/petname"
+                android:layout_marginLeft="30dp"
+                android:background="#c0c0c0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="#9370db"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <TextView
+                android:id="@+id/phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="手机"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:layout_marginStart="20dp"
+                android:layout_centerVertical="true"/>
+
+            <EditText
+                android:id="@+id/phone_num"
+                android:text="sdadadaddad"
+                android:layout_toRightOf="@id/phone"
+                android:layout_marginLeft="30dp"
+                android:background="#c0c0c0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textColor="#9370db"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>
