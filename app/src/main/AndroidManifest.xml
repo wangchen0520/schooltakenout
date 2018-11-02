@@ -35,9 +35,9 @@
       <activity android:name=".Activity.ArticleActivity" />
         <activity android:name=".Activity.EditActivity" />
         <activity android:name=".Activity.ArticleListActivity" />
-        <activity android:name=".Activity.StoreActivity"/>
-		    <activity android:name=".Activity.ShoppingCartActivity"/>
-		    <activity android:name=".Activity.SearchActivity"/>
+        <activity android:name=".HomePage.StoreActivity"/>
+        <activity android:name=".HomePage.ShoppingCartActivity"/>
+        <activity android:name=".HomePage.SearchActivity"/>
         <activity
             android:name=".Activity.ModifyInfoActivity"
             android:label="@null"/>
@@ -45,7 +45,18 @@
         <activity android:name=".Activity.CommentActivity" />
         <activity android:name=".Activity.AddManageActivity" />
         <activity android:name=".Activity.AboutUsActivity"></activity>
-    </application>
 
+        <activity
+            android:name="com.alipay.sdk.app.H5PayActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"/>
+
+        <activity
+            android:name="com.alipay.sdk.auth.AuthActivity"
+            android:configChanges="orientation|keyboardHidden|navigation"
+            android:exported="false"
+            android:screenOrientation="behind"/>
+    </application>
 
 </manifest>
