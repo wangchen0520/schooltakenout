@@ -1,68 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:idv="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="56dp"
-    >
-    <LinearLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="56dp">
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+        android:layout_height="match_parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#c0c0c0"
-            idv:title="美食鉴赏"
-            />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <!--轮播图-->
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vp_banner"
+            android:orientation="vertical">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="225dp"
+                android:layout_height="wrap_content"
                 >
-            </android.support.v4.view.ViewPager>
-            <!--指示器-->
-            <com.wy.schooltakenout.Banner.IndicatorView
-                android:id="@+id/idv_banner"
-                android:layout_width="match_parent"
-                android:layout_height="10dp"
-                android:gravity="center_horizontal"
-                android:layout_alignBottom="@id/vp_banner"
-                idv:indicatorInterval="10dp"
-                idv:isCirculate="true"
-                idv:normalDrawable="@mipmap/oval_indicator_grey"
-                idv:selectDrawable="@mipmap/oval_indicator_green">
-            </com.wy.schooltakenout.Banner.IndicatorView>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/sort_list"
-                android:layout_below="@id/idv_banner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
-            <TextView
-                android:id="@+id/daohang"
-                android:text="------文章列表------"
-                android:textSize="15sp"
-                android:gravity="center"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@id/sort_list"
-                android:layout_marginTop="5dp"
-                android:textColor="#000000"
-                android:background="#ffffff"/>
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/article_list"
-                android:layout_below="@id/daohang"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
-        </RelativeLayout>
-    </LinearLayout>
-</ScrollView>
+                <!--轮播图-->
+                <android.support.v4.view.ViewPager
+                    android:id="@+id/vp_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="225dp"
+                    >
+                </android.support.v4.view.ViewPager>
+                <!--指示器-->
+                <com.wy.schooltakenout.Banner.IndicatorView
+                    android:id="@+id/idv_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"
+                    android:gravity="center_horizontal"
+                    android:layout_alignBottom="@id/vp_banner"
+                    idv:indicatorInterval="10dp"
+                    idv:isCirculate="true"
+                    idv:normalDrawable="@mipmap/oval_indicator_grey"
+                    idv:selectDrawable="@mipmap/oval_indicator_green">
+                </com.wy.schooltakenout.Banner.IndicatorView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/sort_list"
+                    android:layout_below="@id/idv_banner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
+                <TextView
+                    android:id="@+id/daohang"
+                    android:text="------文章列表------"
+                    android:textSize="15sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_below="@id/sort_list"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000000"
+                    android:background="#ffffff"/>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/article_list"
+                    android:layout_below="@id/daohang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
+            </RelativeLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/add_article"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add"
+        app:elevation="8dp"
+        />
+
+</FrameLayout>

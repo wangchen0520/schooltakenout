@@ -1,5 +1,6 @@
 package com.wy.schooltakenout;
 
+import android.content.pm.ActivityInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //设置竖屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         fm = getSupportFragmentManager();
         /**
          * bottomNavigation 设置

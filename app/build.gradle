@@ -17,7 +17,11 @@ android {
         }
     }
 }
-
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
@@ -32,6 +36,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    implementation 'com.github.daniel-stoneuk:material-about-library:2.3.0'
+    implementation 'com.github.mr5:icarus:0.1.14'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     testImplementation 'junit:junit:4.12'

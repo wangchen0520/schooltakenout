@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+	<android.support.v7.widget.Toolbar
+		android:id="@+id/store_toolbar"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:background="#c0c0c0"/>
+
+	<TextView
+		android:id="@+id/store_background"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentStart="true"
+		android:layout_below="@id/store_toolbar"
+		android:layout_alignBottom="@id/store_name"
+		android:background="#68bde1"/>
+
+	<ImageView
+		android:id="@+id/store_img"
+		android:layout_width="80dp"
+		android:layout_height="80dp"
+		android:layout_below="@id/store_toolbar"
+		android:layout_centerHorizontal="true"
+		android:layout_marginTop="10dp"/>
+	<!--app:srcCompat="@drawable/ic_store_img"-->
+
+	<TextView
+		android:id="@+id/store_name"
+		android:layout_width="200dp"
+		android:layout_height="40dp"
+		android:layout_below="@+id/store_img"
+		android:layout_centerHorizontal="true"
+		android:textSize="27sp"
+		android:gravity="center"/>
+	<!--android:text="食堂"-->
+
+	<LinearLayout
+		android:id="@+id/store_tags"
+		android:layout_width="match_parent"
+		android:layout_height="40dp"
+		android:layout_below="@id/store_name"
+		android:layout_centerHorizontal="true"
+		android:orientation="horizontal"
+		android:gravity="center"/>
+
+	<android.support.v7.widget.RecyclerView
+		android:id="@+id/store_foods"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_alignParentStart="true"
+		android:layout_below="@+id/store_tags"
+		android:layout_above="@id/store_buy"/>
+
+	<RelativeLayout
+		android:id="@+id/store_buy"
+		android:layout_width="match_parent"
+		android:layout_height="40dp"
+		android:layout_alignParentBottom="true"
+		android:background="#68bde1">
+		<TextView
+			android:id="@+id/buy_total_price"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_toStartOf="@id/buy_fee"
+			android:layout_alignParentStart="true"
+			android:layout_alignParentBottom="true"
+			android:text="123.05"
+			android:textSize="30sp"/>
+
+		<TextView
+			android:id="@+id/buy_fee"
+			android:layout_width="80dp"
+			android:layout_height="20dp"
+			android:layout_toStartOf="@id/buy"
+			android:layout_alignParentBottom="true"
+			android:text="配送费2.00"
+			android:textSize="15sp"/>
+
+		<ImageButton
+			android:id="@+id/buy"
+			android:layout_width="40dp"
+			android:layout_height="match_parent"
+			android:layout_alignParentEnd="true"
+			android:background="@drawable/ic_buy"/>
+	</RelativeLayout>
+</RelativeLayout>
