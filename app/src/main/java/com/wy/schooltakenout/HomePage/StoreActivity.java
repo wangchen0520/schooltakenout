@@ -3,6 +3,7 @@ package com.wy.schooltakenout.HomePage;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +16,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import com.alipay.sdk.app.PayTask;
 import com.wy.schooltakenout.Adapter.FoodAdapter;
 import com.wy.schooltakenout.Data.Food;
 import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.HomePage.OrderView.OrderView;
 import com.wy.schooltakenout.HomePage.Pay.PayResult;
 import com.wy.schooltakenout.HomePage.Pay.util.OrderInfoUtil2_0;
 import com.wy.schooltakenout.R;
@@ -94,7 +96,7 @@ public class StoreActivity extends AppCompatActivity {
         RecyclerView foodView = findViewById(R.id.store_foods);
         final TextView totalPriceView = findViewById(R.id.buy_total_price);
         final TextView feeView = findViewById(R.id.buy_fee);
-        ImageButton buyButton = findViewById(R.id.buy);
+        Button buyButton = findViewById(R.id.buy);
         Toolbar toolbar = findViewById(R.id.store_toolbar);
         //将Toolbar上标题改为商店名并添加回退按钮，实现回退功能
         toolbar.setTitle(storeName);
@@ -127,12 +129,13 @@ public class StoreActivity extends AppCompatActivity {
         for(String storeTag: storeTags) {
             TextView tagView = new TextView(this);
             tagView.setText(storeTag);
-            tagView.setTextSize(16);
+            tagView.setTextSize(14);
+            tagView.setTextColor(Color.rgb(143, 143, 143));
             tagView.setGravity(Gravity.CENTER);
-            tagView.setBackground(this.getResources().getDrawable(R.drawable.ic_tag));
+//            tagView.setBackground(this.getResources().getDrawable(R.drawable.ic_tag));
             tagsLayout.addView(tagView);
-            tagView.getLayoutParams().width = (int) (80 * ddpi);
-            tagView.getLayoutParams().height = (int) (40 * ddpi);
+            tagView.getLayoutParams().width = (int) (54 * ddpi);
+            tagView.getLayoutParams().height = (int) (27 * ddpi);
         }
 
         //添加美食数据
@@ -142,36 +145,16 @@ public class StoreActivity extends AppCompatActivity {
         //设置适配器和点击监听
         final FoodAdapter foodAdapter = new FoodAdapter(foodList);
         foodAdapter.setOnItemClickListener(new FoodAdapter.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(View view, int position, Food thisFood) {
-//                //进行页面跳转并传递美食数据
-//                Intent intent = new Intent(StoreActivity.this, StoreActivity.class);
-//                Food food = foodList.get(position);
-//                intent.putExtra("name", food.getFoodName());
-//                intent.putExtra("img",  food.getFoodImg());
-//                intent.putExtra("storeName", food.getStoreName());
-//                intent.putExtra("price", food.getFoodPrice());
-//                startActivity(intent);
-//                //测试
-//                Toast.makeText(StoreActivity.this, "测试", Toast.LENGTH_SHORT).show();
-//            }
-
             @Override
-            public void onClickAdd(int position, Food thisFood) {
-                chosenNum[position]++;
-                thisFood.setFoodNum(chosenNum[position]);
-                foodAdapter.notifyDataSetChanged();
-                //计算并显示总费用
-                totalPrice += thisFood.getFoodPrice();
-                totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
-            }
-
-            @Override
-            public void onClickReduce(int position, Food thisFood) {
-                if(chosenNum[position]>0) {
+            public void onClickButtom(int position, int variable, OrderView orderView, Food thisFood) {
+                //加入或移出购物车
+                if(variable == 1) {
+                    chosenNum[position]++;
+                    //计算并显示总费用
+                    totalPrice += thisFood.getFoodPrice();
+                    totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
+                } else if(variable == -1) {
                     chosenNum[position]--;
-                    thisFood.setFoodNum(chosenNum[position]);
-                    foodAdapter.notifyDataSetChanged();
                     //计算并显示总费用
                     totalPrice -= thisFood.getFoodPrice();
                     totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
@@ -227,7 +210,6 @@ public class StoreActivity extends AppCompatActivity {
         Thread payThread = new Thread(payRunnable);
         payThread.start();
     }
-
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override

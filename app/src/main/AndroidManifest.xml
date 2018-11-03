@@ -32,7 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-      <activity android:name=".Activity.ArticleActivity" />
+        <activity android:name=".Activity.ArticleActivity" />
         <activity android:name=".Activity.EditActivity" />
         <activity android:name=".Activity.ArticleListActivity" />
         <activity android:name=".HomePage.StoreActivity"/>

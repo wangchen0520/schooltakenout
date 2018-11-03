@@ -5,7 +5,9 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:orientation="horizontal"
-		android:clickable="true">
+		android:clickable="true"
+		android:layout_marginTop="15dp"
+		android:layout_marginStart="15dp">
 		<ImageView
 			android:id="@+id/store_img"
 			android:layout_width="40dp"
@@ -28,8 +30,9 @@
 			android:scaleType="centerInside"/>
 		<ImageButton
 			android:id="@+id/store_delete"
-			android:layout_width="40dp"
-			android:layout_height="40dp"
+			android:layout_width="30dp"
+			android:layout_height="30dp"
 			android:layout_alignParentEnd="true"
+			android:layout_margin="5dp"
 			android:background="@drawable/ic_delete"/>
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.wy.schooltakenout.Adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Store;
 import com.wy.schooltakenout.R;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
@@ -33,6 +35,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 		ImageView storeImage;
 		TextView storeName;
 		LinearLayout storeTags;
+		TextView storeFee;
 
 		private ViewHolder(View view){
 			super(view);
@@ -41,6 +44,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 			storeImage=view.findViewById(R.id.store_img);
 			storeName=view.findViewById(R.id.store_name);
 			storeTags=view.findViewById(R.id.store_tags);
+			storeFee=view.findViewById(R.id.store_fee);
 		}
     }
 
@@ -73,13 +77,17 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 		for(String storeTag: store.getStoreTags()) {
 			TextView tagView = new TextView(context);
 			tagView.setText(storeTag);
-			tagView.setTextSize(10);
+			tagView.setTextSize(12);
+			tagView.setTextColor(Color.rgb(143, 143, 143));
 			tagView.setGravity(Gravity.CENTER);
-			tagView.setBackground(context.getResources().getDrawable(R.drawable.ic_tag));
+//			tagView.setBackground(context.getResources().getDrawable(R.drawable.ic_tag));
 			holder.storeTags.addView(tagView);
-			tagView.getLayoutParams().width = (int) (48 * ddpi);
-			tagView.getLayoutParams().height = (int) (24 * ddpi);
+			tagView.getLayoutParams().width = (int) (40 * ddpi);
+			tagView.getLayoutParams().height = (int) (20 * ddpi);
 		}
+		//配置商家配送费
+		String feeString = "配送费"+(new DecimalFormat("0.00").format(store.getStoreFee()));
+		holder.storeFee.setText(feeString);
 
 		//设置点击响应
         if(onItemClickListener!= null){
