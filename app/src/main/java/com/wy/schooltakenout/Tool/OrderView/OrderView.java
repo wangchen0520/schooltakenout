@@ -1,4 +1,4 @@
-package com.wy.schooltakenout.HomePage.OrderView;
+package com.wy.schooltakenout.Tool.OrderView;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -16,7 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.wy.schooltakenout.HomePage.OrderView.util.Utils;
+import com.wy.schooltakenout.Tool.OrderView.util.Utils;
 import com.wy.schooltakenout.R;
 
 import java.util.ArrayList;

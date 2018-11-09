@@ -1,6 +1,6 @@
-package com.wy.schooltakenout.HomePage.Pay.util;
+package com.wy.schooltakenout.Tool.Pay.util;
 
-import com.wy.schooltakenout.HomePage.Pay.SignUtils;
+import com.wy.schooltakenout.Tool.Pay.SignUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

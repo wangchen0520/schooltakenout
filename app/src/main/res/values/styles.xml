@@ -19,4 +19,9 @@
         <item name="colorControlNormal">#000000</item>
         <item name="colorControlActivated">#000000</item>
     </style>
+
+    <style name="MyLoginEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#68bde1</item>
+        <item name="colorControlActivated">#68bde1</item>
+    </style>
 </resources>

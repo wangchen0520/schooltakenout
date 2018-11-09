@@ -28,9 +28,9 @@ import com.alipay.sdk.app.PayTask;
 import com.wy.schooltakenout.Adapter.FoodAdapter;
 import com.wy.schooltakenout.Data.Food;
 import com.wy.schooltakenout.Data.Store;
-import com.wy.schooltakenout.HomePage.OrderView.OrderView;
-import com.wy.schooltakenout.HomePage.Pay.PayResult;
-import com.wy.schooltakenout.HomePage.Pay.util.OrderInfoUtil2_0;
+import com.wy.schooltakenout.Tool.OrderView.OrderView;
+import com.wy.schooltakenout.Tool.Pay.PayResult;
+import com.wy.schooltakenout.Tool.Pay.util.OrderInfoUtil2_0;
 import com.wy.schooltakenout.R;
 
 import java.text.DecimalFormat;
@@ -39,16 +39,6 @@ import java.util.List;
 import java.util.Map;
 
 public class StoreActivity extends AppCompatActivity {
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.store_activity);
-        //设置竖屏
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        init();
-    }
-
     //进行点餐所需的数据
     private Intent intent;
     private Store thisStore;
@@ -60,6 +50,16 @@ public class StoreActivity extends AppCompatActivity {
     private static final int SDK_PAY_FLAG = 1001;
     private String RSA_PRIVATE = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC+rKL2ruz7D3npGdt9gSrmUsXi3EJkD7eP0Elm0vaRtMWIKMuX+PCUxvXiBuSB34azdacjB2qffJHLegGTOaKHupN1WlCAU1RZtvBMg25HQ/SLPgV+1cvejhjiXDdx3L3q3X6+vuOdccYJ3WAxAB9j95TrpDwxTMKMVdbbXN+CPNNV4Dhc5L5+rKP+D3sbxS98SafJAxTw4fNvOlLivNKKDlqXrYOJCyBn3dXnlAbP+uVPd3cvEzWXxxsKctpol1WG3mVa1x/XLDjsckFYN74WfPORQwrg0waYBY+n1o30C6QxFu6IAD9yYzfD92h4/f1oA7khoEtz2wqZ4cLKqo4zAgMBAAECggEBAKCDMAS+KR0IYDZM4Cr9C6Is2A0sIm+dk4drbf8zZQIvzYHb5dgfZle4TdFiwAZcp0Z3qqWgXq+36/wAz0ai5CGifPPzfYUpoP6NNCkVE0bG/Bwjr/if/ilyMZyMyNf/XZlTsJjelTo7Rt2TEKDvW32KNEFSVqGh3rzInkC4JCe7nBwABVfCnoh3y+K0lHrUrMGxeKPKOlH02PhVsik/aNHpyWXs2r8j1pi807RfpoxmooHmrCxRPF74QsDAB8gX8N0Gekuj82KCCR0Rhnm8jp/SiTSU7/yljaAPhWC8rRvaTOAzPR6H9Zofb/xEUffH42PvR08tkEAXx29Zzt4V5UECgYEA6VZMj+wZL9OLl0SUXbjR8llqYjr2T2XNuglbYj+u7D3EEjEHOH6bKbNpB/WfwaHyZtYJ3+PBi7GPCkHje3AYr/JnKOFqGtXRGqVrN0X1cDXgRDkKfX5xhcTxjwHEp9ET4LmsWVJk7axpjH4ky2Hp+bap7MWAlIkeeTgLoyZYY1ECgYEA0TGR2fF8mSZ5M+BRN7CfLcaDMwG8Q3yfvdVHb2ADvxwovyLFgmE+WhOqqBgUwbQ9rQNZFxlwhvBljNR2kj6NxPiYWhQJSZz7U+KerIv8PEesw1t1h/wrKklaAdqdhf03xsI5pCIkBOmikmly4pmUdYbtS5eUU1I7RoVrx0Y7kEMCgYAWfbABi2NeHcjturmGUyNBdebwMvi87HYpAW/ih3rn4Ig+rKUih+mS2m08TCuq8V45FVZ8Uyq7uVCtT26K3mIyy22wHhIpJgTyyZENEdw3hanpSYo+UGrG1xXlj+kRt/Bvj9YSAgQieKTv2tTXGcgAvt+gJ+Vd692ZF5LflfmdEQKBgEeJJvIbdVs939aQj9V2bYiOyNDJeCKv3ERjSbFZaQ6SR5DNCDOEo3jUHtiqm3Z991VRvsZ6aZOLY36cLQvnnj1MMXUkQuTMbNmLtm0U1aWbcQXBIdjlr7EfMktOAe4O4GL0iheJoT2Y04Iz0xiQIkdqY30lEZDInwKHn4qehsHXAoGAEpNq7hry9FdYOtAnOi004X2EgiatedGhRnxks1gMX843BL7NfYgMJojvUfOE6vOo4JhyP23m9xSDRRNdYNfdpi67bSyODlKPVG1T0duNL69269umYL/ZBYhkESG12wHXsNXFy+ntpL38qLF4jXzNE0g5E7kiF6RJ8ChXYoOMMYM=";
     public static final String APPID = "2016092000557984";
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.store_activity);
+        //设置竖屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        init();
+    }
 
     //进行初始化操作
     private void init() {

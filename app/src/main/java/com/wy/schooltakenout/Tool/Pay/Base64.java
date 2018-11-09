@@ -1,4 +1,4 @@
-package com.wy.schooltakenout.HomePage.Pay;
+package com.wy.schooltakenout.Tool.Pay;
 
 public final class Base64 {
 

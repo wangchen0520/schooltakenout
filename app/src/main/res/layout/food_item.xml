@@ -41,7 +41,7 @@
 			android:textColor="#8F8F8F"
 			android:textSize="25sp"/>
 
-		<com.wy.schooltakenout.HomePage.OrderView.OrderView
+		<com.wy.schooltakenout.Tool.OrderView.OrderView
 			android:id="@+id/order_food"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

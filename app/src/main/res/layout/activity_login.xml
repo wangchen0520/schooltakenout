@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageView_logo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        app:srcCompat="@drawable/ic_food" />
+
+    <RelativeLayout
+        android:id="@+id/layout_phone"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/imageView_logo"
+        android:layout_marginTop="40dp"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/textView_phone"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_alignBottom="@+id/edit_username"
+            android:layout_toStartOf="@+id/edit_username"
+            android:layout_marginBottom="5dp"
+            android:textSize="25sp"
+            android:gravity="bottom"
+            app:srcCompat="@drawable/ic_phone"/>
+
+        <EditText
+            android:id="@+id/edit_username"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:ems="10"
+            android:inputType="phone"
+            android:theme="@style/MyLoginEditText"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_password"
+        android:layout_width="270dp"
+        android:layout_height="50dp"
+        android:layout_below="@id/layout_phone"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/textView_password"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_alignBottom="@+id/edit_password"
+            android:layout_toStartOf="@+id/edit_password"
+            android:layout_marginBottom="5dp"
+            android:textSize="25sp"
+            android:gravity="bottom"
+            app:srcCompat="@drawable/ic_lock"/>
+
+        <EditText
+            android:id="@+id/edit_password"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:theme="@style/MyLoginEditText"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/button_login"
+        android:layout_width="270dp"
+        android:layout_height="40dp"
+        android:layout_alignStart="@+id/layout_password"
+        android:layout_below="@id/layout_password"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="35dp"
+        android:background="@color/subject"
+        android:text="登录"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/button_login_store"
+        android:layout_width="270dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/button_login"
+        android:layout_alignStart="@+id/button_login"
+        android:layout_marginTop="20dp"
+        android:background="@color/subject"
+        android:text="商家端登录"
+        android:textColor="@color/white"/>
+
+    <Button
+        android:id="@+id/button_signin"
+        android:layout_width="270dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/button_login_store"
+        android:layout_alignStart="@+id/button_login"
+        android:layout_marginTop="20dp"
+        android:background="@color/subject"
+        android:text="注册"
+        android:textColor="@color/white"/>
+
+</RelativeLayout>
