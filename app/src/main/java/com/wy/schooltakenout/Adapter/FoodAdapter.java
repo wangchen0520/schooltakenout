@@ -7,16 +7,18 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Food;
+import com.wy.schooltakenout.Tool.OrderView.OrderView;
 import com.wy.schooltakenout.R;
 
 import java.text.DecimalFormat;
 import java.util.List;
+
+import rx.functions.Action2;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     private Context context;
@@ -28,9 +30,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         ImageView foodImage;
         TextView foodName;
         TextView foodPrice;
-        TextView foodNum;
-        ImageButton foodAdd;
-        ImageButton foodReduce;
+        OrderView orderView;
 
         private ViewHolder(View view){
             super(view);
@@ -39,9 +39,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
             foodImage = view.findViewById(R.id.food_img);
             foodName = view.findViewById(R.id.food_name);
             foodPrice = view.findViewById(R.id.food_price);
-            foodNum = view.findViewById(R.id.food_num);
-            foodAdd = view.findViewById(R.id.food_add);
-            foodReduce = view.findViewById(R.id.food_reduce);
+            orderView = view.findViewById(R.id.order_food);
         }
     }
 
@@ -69,34 +67,23 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
         holder.foodName.setText(food.getFoodName());
         holder.foodPrice.setText(new DecimalFormat("0.00").format(food.getFoodPrice()));
-        if(food.getFoodNum() != 0) {
-            holder.foodNum.setText(food.getFoodNum()+"");
-        } else {
-            holder.foodNum.setText("");
-        }
         Glide.with(context).load(food.getFoodImg()).into(holder.foodImage);
 
-        //设置点击响应
-        if(onItemClickListener!= null){
-//            holder.itemView.setOnClickListener( new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    onItemClickListener.onItemClick(holder.itemView, holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
-//                }
-//            });
-            holder.foodAdd.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onClickAdd(holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
-                }
-            });
-            holder.foodReduce.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onClickReduce(holder.getAdapterPosition(), foodList.get(holder.getAdapterPosition()));
-                }
-            });
+        //设置数量初始状态
+        if(food.getFoodNum() != 0) {
+            holder.orderView.setState(5, food.getFoodNum());
         }
+        //设置点击响应
+        holder.orderView.setCallback(new Action2<Integer, Integer>() {
+            @Override
+            public void call(Integer integer, Integer integer2) {
+                onItemClickListener.onClickButtom(
+                        holder.getAdapterPosition(),
+                        integer2,
+                        holder.orderView,
+                        foodList.get(holder.getAdapterPosition()));
+            }
+        });
     }
 
     @Override
@@ -107,12 +94,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     //设置点击响应
     private OnItemClickListener onItemClickListener;
     public interface OnItemClickListener{
-//        //点击进入美食详情界面
-//        void onItemClick(View view, int position, Food thisFood);
-        //点击添加美食进行购买
-        void onClickAdd(int position, Food thisFood);
-        //点击减少美食
-        void onClickReduce(int position, Food thisFood);
+        void onClickButtom(int position, int variable, OrderView orderView, Food thisFood);
     }
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this.onItemClickListener=onItemClickListener;

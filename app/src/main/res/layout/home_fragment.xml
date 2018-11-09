@@ -27,12 +27,13 @@
 		android:ems="10"
 		android:inputType="textPersonName"
 		android:hint="请输入美食关键字"
-		android:textSize="17sp"/>
+		android:textSize="17sp"
+		android:theme="@style/MyEditText"/>
 
 	<ImageButton
 		android:id="@+id/imageButton_search"
-		android:layout_width="40dp"
-		android:layout_height="40dp"
+		android:layout_width="32dp"
+		android:layout_height="32dp"
 		android:layout_alignTop="@+id/edit_search"
 		android:layout_alignParentEnd="true"
 		android:layout_marginEnd="30dp"

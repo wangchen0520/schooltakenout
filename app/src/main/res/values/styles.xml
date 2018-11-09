@@ -13,4 +13,15 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <!--修改我自己的输入框下划线和光标颜色-->
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#000000</item>
+        <item name="colorControlActivated">#000000</item>
+    </style>
+
+    <style name="MyLoginEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">#68bde1</item>
+        <item name="colorControlActivated">#68bde1</item>
+    </style>
 </resources>

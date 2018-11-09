@@ -24,4 +24,10 @@
         <attr name="indicatorRadius"/>
         <attr name="isCirculate"/>
     </declare-styleable>
+    <!--点餐动画属性-->
+    <declare-styleable name="OrderView">
+        <attr name="button_text" format="string"/>
+        <attr name="button_color" format="color"/>
+        <attr name="text_color" format="reference"/>
+    </declare-styleable>
 </resources>
