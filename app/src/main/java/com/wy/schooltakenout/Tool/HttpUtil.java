@@ -31,7 +31,6 @@ public class HttpUtil {
 			HttpResponse response = client.execute(post);
 			if (response.getStatusLine().getStatusCode() == 200) {
 				String result = EntityUtils.toString(response.getEntity());
-				// save SharedPre...
 				//result = new String(result.getBytes("utf-8"),"utf-8");
 				System.out.println(result);
 				return result;
