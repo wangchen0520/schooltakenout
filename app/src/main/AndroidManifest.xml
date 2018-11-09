@@ -37,8 +37,8 @@
         <activity android:name=".Activity.EditActivity" />
         <activity android:name=".Activity.ArticleListActivity" />
         <activity android:name=".HomePage.StoreActivity"/>
-        <activity android:name=".HomePage.ShoppingCartActivity"/>
-        <activity android:name=".HomePage.SearchActivity"/>
+	      <activity android:name=".HomePage.ShoppingCartActivity"/>
+	      <activity android:name=".HomePage.SearchActivity"/>
         <activity
             android:name=".Activity.ModifyInfoActivity"
             android:label="@null"/>
