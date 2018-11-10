@@ -3,7 +3,7 @@ package com.wy.schooltakenout.HomePage;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,13 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
@@ -29,6 +26,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wy.schooltakenout.Adapter.FoodAdapter;
 import com.wy.schooltakenout.Data.Goods;
+import com.wy.schooltakenout.Data.Orders;
 import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.Tool.IOTool;
 import com.wy.schooltakenout.Tool.OrderView.OrderView;
@@ -36,7 +34,9 @@ import com.wy.schooltakenout.Tool.Pay.PayResult;
 import com.wy.schooltakenout.Tool.Pay.util.OrderInfoUtil2_0;
 import com.wy.schooltakenout.R;
 
+import java.io.File;
 import java.lang.reflect.Type;
+import java.sql.Date;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,11 +44,12 @@ import java.util.Map;
 
 public class StoreActivity extends AppCompatActivity {
     //进行点餐所需的数据
-    private Intent intent;
     private Seller thisSeller;
-    private int storeNum;
+    private int sellerNum;
     private int[] chosenNum;
     private double totalPrice;
+    private List<Goods> goodsList;
+    private int userID;
 
     //支付需要的数据
     private static final int SDK_PAY_FLAG = 1001;
@@ -73,51 +74,37 @@ public class StoreActivity extends AppCompatActivity {
         Gson gson = new Gson();
         chosenNum = new int[100];
         totalPrice = 0.00;
-        intent = getIntent();
+        Intent intent = getIntent();
 
-        // 根据传输过来的storeID获取商店信息
-        int storeID = intent.getIntExtra("storeNo", 0);
-//        String storeName = intent.getStringExtra("name");
-//        int storeImg = intent.getIntExtra("img", 0);
-//        List<String> storeTags = intent.getStringArrayListExtra("tags");
-//        int storeFoodNum = intent.getIntExtra("storeFoodNum", 0);
-//        int storeNo = intent.getIntExtra("storeNo", 0);
-//        double storeFee = intent.getDoubleExtra("storeFee", 0.00);
-//        thisSeller = new Seller(storeNo, storeName, storeImg, storeTags, storeFoodNum, storeFee);
+        // 根据传输过来的sellerID获取商店信息
+        int sellerID = intent.getIntExtra("sellerID", 0);
         url = IOTool.ip+"seller/info.do";
         list = new ArrayList<>();
-        list.add("sellerID_"+storeID);
+        list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
         thisSeller = gson.fromJson(json, Seller.class);
 
-        storeNum = intent.getIntExtra("storeNum", 0);
-        chosenNum = intent.getIntArrayExtra("chosenFood"+storeID);
+        sellerNum = intent.getIntExtra("sellerNum", 0);
+        userID = intent.getIntExtra("userID", 0);
+        chosenNum = intent.getIntArrayExtra("chosenFood"+sellerID);
 
-        //添加商店的美食数据
-//        final List<Goods> goodsList = new ArrayList<>();
-//        for(int i=0; i<storeFoodNum; i++) {
-//            Goods food;
-//            //测试数据
-//            food = new Goods(i, "泡椒风爪"+i, storeName, R.drawable.ic_food, 5.60, chosenNum[i]);
-//
-//            goodsList.add(food);
-//        }
+        // 获取商店的美食数据
         url = IOTool.ip+"good/list.do";
         json = IOTool.upAndDown(url, list);
         Type type = new TypeToken<List<Goods>>(){}.getType();
-        final List<Goods> goodsList = gson.fromJson(json, type);
+        goodsList = gson.fromJson(json, type);
 
         //获取布局中的构件
         ImageView imageView = findViewById(R.id.store_img);
         TextView nameView = findViewById(R.id.store_name);
-        LinearLayout tagsLayout = findViewById(R.id.store_tags);
+//        LinearLayout tagsLayout = findViewById(R.id.store_tags);
         RecyclerView foodView = findViewById(R.id.store_foods);
         final TextView totalPriceView = findViewById(R.id.buy_total_price);
         final TextView feeView = findViewById(R.id.buy_fee);
         Button buyButton = findViewById(R.id.buy);
         Toolbar toolbar = findViewById(R.id.store_toolbar);
         //将Toolbar上标题改为商店名并添加回退按钮，实现回退功能
-        toolbar.setTitle(thisSeller.getStoreName());
+        toolbar.setTitle(thisSeller.getName());
         setSupportActionBar(toolbar);
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -129,32 +116,41 @@ public class StoreActivity extends AppCompatActivity {
             });
         }
 
-        //使用传输的数据进行构件的初始化赋值
-        imageView.setImageResource(thisSeller.getStoreImg());
-        nameView.setText(thisSeller.getStoreName());
+        // 读出商家头像
+        String filename = thisSeller.getSellerID()+".jpg";
+        String path = this.getFilesDir().getAbsolutePath();
+        File file = new File(path+"store_"+filename);
+        if(!file.exists()) {
+            // 向服务器请求商家头像并存储
+            url = IOTool.ip+"resources/seller/head/"+filename;
+            String result = IOTool.upAndDown(url, null);
+            IOTool.save(result, "store_"+filename, this);
+        }
+        // 使用传输的数据进行构件的初始化赋值
+        imageView.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+        nameView.setText(thisSeller.getName());
         //使用传过来的数据计算已选美食的总价格
-        for(int i = 0; i< thisSeller.getStoreFoodNum(); i++) {
-            totalPrice += chosenNum[i] * goodsList.get(i).getFoodPrice();
+        for(int i = 0; i< goodsList.size(); i++) {
+            totalPrice += chosenNum[i] * goodsList.get(i).getPrice();
         }
         totalPriceView.setText(new DecimalFormat("0.00").format(totalPrice));
 
-        String feeString = "配送费"+(new DecimalFormat("0.00").format(thisSeller.getStoreFee()));
+        String feeString = "配送费"+(new DecimalFormat("0.00").format(thisSeller.getAccount()));
         feeView.setText(feeString);
         //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
-        DisplayMetrics metric = getResources().getDisplayMetrics();
-        double ddpi = metric.densityDpi / 160.0;
+//        DisplayMetrics metric = getResources().getDisplayMetrics();
+//        double ddpi = metric.densityDpi / 160.0;
         //添加tag栏
-        for(String storeTag: thisSeller.getStoreTags()) {
-            TextView tagView = new TextView(this);
-            tagView.setText(storeTag);
-            tagView.setTextSize(14);
-            tagView.setTextColor(Color.rgb(143, 143, 143));
-            tagView.setGravity(Gravity.CENTER);
-//            tagView.setBackground(this.getResources().getDrawable(R.drawable.ic_tag));
-            tagsLayout.addView(tagView);
-            tagView.getLayoutParams().width = (int) (54 * ddpi);
-            tagView.getLayoutParams().height = (int) (27 * ddpi);
-        }
+//        for(String storeTag: thisSeller.getStoreTags()) {
+//            TextView tagView = new TextView(this);
+//            tagView.setText(storeTag);
+//            tagView.setTextSize(14);
+//            tagView.setTextColor(Color.rgb(143, 143, 143));
+//            tagView.setGravity(Gravity.CENTER);
+//            tagsLayout.addView(tagView);
+//            tagView.getLayoutParams().width = (int) (54 * ddpi);
+//            tagView.getLayoutParams().height = (int) (27 * ddpi);
+//        }
 
         //添加美食数据
         //必要，但是不知道有什么用
@@ -169,12 +165,12 @@ public class StoreActivity extends AppCompatActivity {
                 if(variable == 1) {
                     chosenNum[position]++;
                     //计算并显示总费用
-                    totalPrice += thisGoods.getFoodPrice();
+                    totalPrice += thisGoods.getPrice();
                     totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
                 } else if(variable == -1) {
                     chosenNum[position]--;
                     //计算并显示总费用
-                    totalPrice -= thisGoods.getFoodPrice();
+                    totalPrice -= thisGoods.getPrice();
                     totalPriceView.setText(new DecimalFormat("0.00").format(Math.abs(totalPrice)));
                 }
             }
@@ -188,10 +184,8 @@ public class StoreActivity extends AppCompatActivity {
                 if(totalPrice - 0 < 0.001) {
                     Toast.makeText(StoreActivity.this, "(#`O′)还什么都没买呢！", Toast.LENGTH_SHORT).show();
                 } else {
-                    //String totalPriceString = new DecimalFormat("0.00").format(totalPrice+thisSeller.getStoreFee());
-                    //Toast.makeText(StoreActivity.this, "总价格为"+totalPriceString+"，提交成功", Toast.LENGTH_SHORT).show();
                     //调用支付宝接口进行支付
-                    pay(totalPrice+ thisSeller.getStoreFee());
+                    pay(totalPrice+ thisSeller.getAccount());
                 }
             }
         });
@@ -243,13 +237,28 @@ public class StoreActivity extends AppCompatActivity {
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         Toast.makeText(StoreActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                        //提交成功后清空选择的项
-                        //测试数据
-                        for(int i = 0; i< thisSeller.getStoreFoodNum(); i++) {
-                            chosenNum[i] = 0;
-                        }
                         // 生成订单的json数据并上传
-
+                        Gson gson = new Gson();
+                        List<Orders> ordersList = new ArrayList<>();
+                        for(int i = 0; i< goodsList.size(); i++) {
+                            if(chosenNum[i] != 0) {
+                                Orders orders = new Orders(
+                                        i,
+                                        thisSeller.getSellerID(),
+                                        userID,
+                                        chosenNum[i]*goodsList.get(i).getPrice(),
+                                        new Date(System.currentTimeMillis()),
+                                        goodsList.get(i).getGoodsID(),
+                                        chosenNum[i]);
+                                ordersList.add(orders);
+                                // 提交成功后清空选择的项
+                                chosenNum[i] = 0;
+                            }
+                        }
+                        String jsonObject = gson.toJson(ordersList);
+                        List<String> jsonList = new ArrayList<>();
+                        jsonList.add(jsonObject);
+                        IOTool.upAndDown(IOTool.ip+"orders/add.do", jsonList);
                         back();
                     } else {
                         Toast.makeText(StoreActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
@@ -263,8 +272,8 @@ public class StoreActivity extends AppCompatActivity {
     public static int resultCode = 100;
     private void back() {
         Intent intent = new Intent();
-        for(int i=0; i<storeNum; i++) {
-            intent.putExtra("chosenFood"+i, this.intent.getIntArrayExtra("chosenFood"+i));
+        for(int i=0; i<sellerNum; i++) {
+            intent.putExtra("chosenFood"+i, this.getIntent().getIntArrayExtra("chosenFood"+i));
         }
         setResult(resultCode, intent);
         finish();

@@ -17,7 +17,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
+import com.wy.schooltakenout.Tool.IOTool;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -66,27 +68,38 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
         position = holder.getAdapterPosition();
 		Seller seller = sellerList.get(position);
 
-		holder.storeName.setText(seller.getStoreName());
-		Glide.with(context).load(seller.getStoreImg()).into(holder.storeImage);
+		holder.storeName.setText(seller.getName());
+
+		// 读出商家头像
+		String filename = seller.getSellerID()+".jpg";
+		String path = this.context.getFilesDir().getAbsolutePath();
+		File file = new File(path+"store_"+filename);
+		if(!file.exists()) {
+			// 向服务器请求商家头像并存储
+			String url = IOTool.ip+"resources/seller/head/"+filename;
+			String result = IOTool.upAndDown(url, null);
+			IOTool.save(result, "store_"+filename, this.context);
+		}
+
+		Glide.with(context).load(file).into(holder.storeImage);
 		//防止标签重复生成
         holder.storeTags.removeAllViews();
         //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
         DisplayMetrics metric = context.getResources().getDisplayMetrics();
         double ddpi = metric.densityDpi / 160.0;
         //动态添加标签
-		for(String storeTag: seller.getStoreTags()) {
-			TextView tagView = new TextView(context);
-			tagView.setText(storeTag);
-			tagView.setTextSize(12);
-			tagView.setTextColor(Color.rgb(143, 143, 143));
-			tagView.setGravity(Gravity.CENTER);
-//			tagView.setBackground(context.getResources().getDrawable(R.drawable.ic_tag));
-			holder.storeTags.addView(tagView);
-			tagView.getLayoutParams().width = (int) (40 * ddpi);
-			tagView.getLayoutParams().height = (int) (20 * ddpi);
-		}
+//		for(String storeTag: seller.getStoreTags()) {
+//			TextView tagView = new TextView(context);
+//			tagView.setText(storeTag);
+//			tagView.setTextSize(12);
+//			tagView.setTextColor(Color.rgb(143, 143, 143));
+//			tagView.setGravity(Gravity.CENTER);
+//			holder.storeTags.addView(tagView);
+//			tagView.getLayoutParams().width = (int) (40 * ddpi);
+//			tagView.getLayoutParams().height = (int) (20 * ddpi);
+//		}
 		//配置商家配送费
-		String feeString = "配送费"+(new DecimalFormat("0.00").format(seller.getStoreFee()));
+		String feeString = "配送费"+(new DecimalFormat("0.00").format(seller.getAccount()));
 		holder.storeFee.setText(feeString);
 
 		//设置点击响应

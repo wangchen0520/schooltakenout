@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                     // 否则是第一次切换则加入fragment1，注意加入后是会显示出来的。replace方法也是先remove后add
                 else {
                     Intent intent = getIntent();
-                    String userID = intent.getStringExtra("userID");
+                    int userID = intent.getIntExtra("userID", 0);
                     mHomeFragment = HomeFragment.newInstance(userID);
                     ft.add(R.id.tb, mHomeFragment);
                 }
@@ -136,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 if (mMyinfoFragment != null)
                     ft.show(mMyinfoFragment);
                 else {
-                    mMyinfoFragment = MyinfoFragment.newInstance();
+                    Intent intent = getIntent();
+                    int userID = intent.getIntExtra("userID", 0);
+                    mMyinfoFragment = MyinfoFragment.newInstance(userID);
                     ft.add(R.id.tb, mMyinfoFragment);
                 }
                 break;

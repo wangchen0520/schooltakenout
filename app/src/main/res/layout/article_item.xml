@@ -15,7 +15,7 @@
         android:layout_margin="16dp">
 
         <ImageView
-            android:id="@+id/goods"
+            android:id="@+id/food"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@drawable/ic_avatar"/>

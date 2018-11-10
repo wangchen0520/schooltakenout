@@ -20,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MyinfoFragment extends Fragment {
-
+    private int userID;
     private String TAG=this.getClass().getName();
 
     //个人信息
@@ -41,6 +41,15 @@ public class MyinfoFragment extends Fragment {
 
     public static MyinfoFragment newInstance() {
         MyinfoFragment fragment = new MyinfoFragment();
+        return fragment;
+    }
+
+    // 需要传递参数
+    public static MyinfoFragment newInstance(int userID) {
+        MyinfoFragment fragment = new MyinfoFragment();
+        Bundle args = new Bundle();
+        args.putInt("userID", userID);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -68,6 +77,9 @@ public class MyinfoFragment extends Fragment {
         comment.setOnClickListener(lis);
         addressManagement.setOnClickListener(lis);
         aboutUs.setOnClickListener(lis);
+
+        // 得到传来的userID
+        userID = getArguments().getInt("userID");
     }
 
     class MyListener implements View.OnClickListener{

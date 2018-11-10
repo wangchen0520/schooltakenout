@@ -30,21 +30,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
-    private User user;
+    private int userID;
     private int[][] shoppingFood;
-    private int storeNum;
-    //测试数据
-//    private int storeNum = 10;
+    private int sellerNum;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
 
     // 需要传递参数
-    public static HomeFragment newInstance(String userID) {
+    public static HomeFragment newInstance(int userID) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putString("userID", userID);
+        args.putInt("userID", userID);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,14 +81,7 @@ public class HomeFragment extends Fragment {
         }
 
         // 获取传入的UserID
-        String userID = getArguments().getString("userID");
-        // 获取User信息
-        url = IOTool.ip+"user/info.do";
-        List<String> userInfoList = new ArrayList<>();
-        userInfoList.add("userID_"+userID);
-        json = IOTool.upAndDown(url, userInfoList);
-        // 存储User信息
-        user = gson.fromJson(json, User.class);
+        userID = getArguments().getInt("userID");
 
         // 从服务器获取商家列表
         url = IOTool.ip+"user/info.do";
@@ -100,23 +91,10 @@ public class HomeFragment extends Fragment {
         sellerList.clear();
         Type type = new TypeToken<List<Seller>>(){}.getType();
         sellerList = gson.fromJson(json, type);
-        storeNum = sellerList.size();
-
-//        Seller store;
-//        //测试数据
-//        List<String> storeTags = new ArrayList<>();
-//        storeTags.add("不好吃");
-//        storeTags.add("冷饮");
-//
-//        for(int i=0; i<storeNum; i++) {
-//            //测试数据
-//            store = new Seller(i, "食堂"+i, R.drawable.ic_store_img, storeTags, i+1, 2.00);
-//
-//            sellerList.add(store);
-//        }
+        sellerNum = sellerList.size();
 
         //初始化购物车
-        shoppingFood = new int[storeNum][100];
+        shoppingFood = new int[sellerNum][100];
 
         //美食搜索部分
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -125,8 +103,9 @@ public class HomeFragment extends Fragment {
                 String searchText = searchView.getText().toString();
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 intent.putExtra("searchString", searchText);
-                intent.putExtra("storeNum", storeNum);
-                for(int i=0; i<storeNum; i++) {
+                intent.putExtra("userID", userID);
+                intent.putExtra("sellerNum", sellerNum);
+                for(int i=0; i<sellerNum; i++) {
                     intent.putExtra("chosenFood"+i, shoppingFood[i]);
                 }
                 startActivityForResult(intent, requestCode);
@@ -143,15 +122,11 @@ public class HomeFragment extends Fragment {
             public void onClick(int position, Seller thisSeller) {
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(getActivity(), StoreActivity.class);
-                intent.putExtra("storeNo", thisSeller.getSellerID());
-//                intent.putExtra("name", thisSeller.getStoreName());
-//                intent.putExtra("img",  thisSeller.getStoreImg());
-//                intent.putExtra("tags", (ArrayList<String>) thisSeller.getStoreTags());
-//                intent.putExtra("storeFoodNum", thisSeller.getStoreFoodNum());
-//                intent.putExtra("storeFee", thisSeller.getStoreFee());
+                intent.putExtra("sellerID", thisSeller.getSellerID());
+                intent.putExtra("userID", userID);
                 //将所有购物车的数据全发过去，防止数据丢失
-                intent.putExtra("storeNum", storeNum);
-                for(int i=0; i<storeNum; i++) {
+                intent.putExtra("sellerNum", sellerNum);
+                for(int i=0; i<sellerNum; i++) {
                     intent.putExtra("chosenFood"+i, shoppingFood[i]);
                 }
                 startActivityForResult(intent, requestCode);
@@ -159,13 +134,14 @@ public class HomeFragment extends Fragment {
         });
         storeView.setAdapter(storeAdapter);
 
-        //添加购物车的点击事件
+        // 购物车的点击事件
         shoppingCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
-                intent.putExtra("storeNum", storeNum);
-                for(int i=0; i<storeNum; i++) {
+                intent.putExtra("sellerNum", sellerNum);
+                intent.putExtra("userID", userID);
+                for(int i=0; i<sellerNum; i++) {
                     intent.putExtra("chosenFood"+i, shoppingFood[i]);
                 }
                 startActivityForResult(intent, requestCode);
@@ -179,12 +155,8 @@ public class HomeFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode==HomeFragment.requestCode){
             //data是上一个Activity调用setResult方法时传递过来的Intent
-            for(int i=0; i<storeNum; i++) {
-                //这里应该用i获得该Store，来获得storeFoodNum
-                //测试数据
-                int storeFoodNum = i+1;
-
-                for(int j=0; j<storeFoodNum; j++) {
+            for(int i=0; i<sellerNum; i++) {
+                for(int j=0; j<30; j++) {
                     shoppingFood[i][j] = data.getIntArrayExtra("chosenFood"+i)[j];
                 }
             }

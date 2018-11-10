@@ -1,6 +1,8 @@
 package com.wy.schooltakenout.StorePage;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -17,13 +19,13 @@ import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
 
+import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class StorePageActivity extends AppCompatActivity {
     //本商店的数据
-    private Intent intent;
     private Seller thisSeller;
 
     @Override
@@ -38,46 +40,43 @@ public class StorePageActivity extends AppCompatActivity {
         List<String> list;
         String json;
         Gson gson = new Gson();
-        intent = getIntent();
+        Intent intent = getIntent();
 
-        //获取布局中的构件
+        // 获取布局中的构件
         ImageView imageView = findViewById(R.id.store_img);
         TextView nameView = findViewById(R.id.store_name);
         RecyclerView orderView = findViewById(R.id.store_orders);
 
-        //获取传输过来的商店数据
-        int storeID = intent.getIntExtra("storeID", 0);
-//        String storeName = intent.getStringExtra("name");
-//        int storeImg = intent.getIntExtra("img", 0);
-//        List<String> storeTags = intent.getStringArrayListExtra("tags");
-//        int storeFoodNum = intent.getIntExtra("storeFoodNum", 0);
-//        double storeFee = intent.getDoubleExtra("storeFee", 0.00);
-//        thisSeller = new Seller(storeNo, storeName, storeImg, storeTags, storeFoodNum, storeFee);
+        // 获取传输过来的商店数据
+        int sellerID = intent.getIntExtra("sellerID", 0);
         url = IOTool.ip+"seller/info.do";
         list = new ArrayList<>();
-        list.add("sellerID_"+storeID);
+        list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
         thisSeller = gson.fromJson(json, Seller.class);
 
-        //添加商店的美食数据
-//        final List<Orders> ordersList = new ArrayList<>();
-//        for(int i=0; i<thisSeller.getStoreFoodNum(); i++) {
-//            Orders order;
-//            //测试数据
-//            order = new Orders(i, "泡椒风爪"+i, R.drawable.ic_food, "用户", "15200000000");
-//
-//            ordersList.add(order);
-//        }
+        // 获取商店的订单数据
         url = IOTool.ip+"orders/list.do";
         list = new ArrayList<>();
-        list.add("sellerID_"+storeID);
+        list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
         Type type = new TypeToken<List<Orders>>(){}.getType();
         final List<Orders> ordersList = gson.fromJson(json, type);
 
-        //使用传输的数据进行构件的初始化赋值
-        imageView.setImageResource(thisSeller.getStoreImg());
-        nameView.setText(thisSeller.getStoreName());
+
+        // 读出商家头像
+        String filename = thisSeller.getSellerID()+".jpg";
+        String path = this.getFilesDir().getAbsolutePath();
+        File file = new File(path+"store_"+filename);
+        if(!file.exists()) {
+            // 向服务器请求商家头像并存储
+            url = IOTool.ip+"resources/seller/head/"+filename;
+            String result = IOTool.upAndDown(url, null);
+            IOTool.save(result, "store_"+filename, this);
+        }
+        // 使用传输的数据进行构件的初始化赋值
+        imageView.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+        nameView.setText(thisSeller.getName());
 
         //必要，但是不知道有什么用
         GridLayoutManager orderLayoutManager=new GridLayoutManager(this,1);

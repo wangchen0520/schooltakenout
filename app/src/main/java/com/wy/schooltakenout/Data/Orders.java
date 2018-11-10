@@ -8,10 +8,10 @@ public class Orders {
     private int userID;
     private double totalPrice;
     private Date time;
-    private int[] goodsID;
-    private int[] goodsNum;
+    private int goodsID;
+    private int goodsNum;
 
-    public Orders(int orderID, int sellerID, int userID, double totalPrice, Date time, int[] goodsID, int[] goodsNum) {
+    public Orders(int orderID, int sellerID, int userID, double totalPrice, Date time, int goodsID, int goodsNum) {
         this.orderID = orderID;
         this.sellerID = sellerID;
         this.userID = userID;
@@ -61,19 +61,19 @@ public class Orders {
         this.time = time;
     }
 
-    public int[] getGoodsID() {
+    public int getGoodsID() {
         return goodsID;
     }
 
-    public void setGoodsID(int[] goodsID) {
+    public void setGoodsID(int goodsID) {
         this.goodsID = goodsID;
     }
 
-    public int[] getGoodsNum() {
+    public int getGoodsNum() {
         return goodsNum;
     }
 
-    public void setGoodsNum(int[] goodsNum) {
+    public void setGoodsNum(int goodsNum) {
         this.goodsNum = goodsNum;
     }
 }

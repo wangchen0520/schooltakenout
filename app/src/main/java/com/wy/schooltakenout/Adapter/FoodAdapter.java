@@ -12,9 +12,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Goods;
+import com.wy.schooltakenout.Tool.IOTool;
 import com.wy.schooltakenout.Tool.OrderView.OrderView;
 import com.wy.schooltakenout.R;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
 
@@ -65,13 +67,25 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         position = holder.getAdapterPosition();
         Goods goods = goodsList.get(position);
 
-        holder.foodName.setText(goods.getFoodName());
-        holder.foodPrice.setText(new DecimalFormat("0.00").format(goods.getFoodPrice()));
-        Glide.with(context).load(goods.getFoodImg()).into(holder.foodImage);
+        holder.foodName.setText(goods.getNum());
+        holder.foodPrice.setText(new DecimalFormat("0.00").format(goods.getPrice()));
+
+        // 读出美食图片
+        String filename = goods.getGoodsID()+".jpg";
+        String path = this.context.getFilesDir().getAbsolutePath();
+        File file = new File(path+"food_"+filename);
+        if(!file.exists()) {
+            // 向服务器请求美食图片并存储
+            String url = IOTool.ip+"resources/food/images/"+filename;
+            String result = IOTool.upAndDown(url, null);
+            IOTool.save(result, "food_"+filename, this.context);
+        }
+
+        Glide.with(context).load(file).into(holder.foodImage);
 
         //设置数量初始状态
-        if(goods.getFoodNum() != 0) {
-            holder.orderView.setState(5, goods.getFoodNum());
+        if(goods.getNum() != 0) {
+            holder.orderView.setState(5, goods.getNum());
         }
         //设置点击响应
         holder.orderView.setCallback(new Action2<Integer, Integer>() {

@@ -11,9 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.wy.schooltakenout.Data.Orders;
+import com.wy.schooltakenout.Data.User;
 import com.wy.schooltakenout.R;
+import com.wy.schooltakenout.Tool.IOTool;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
@@ -59,9 +64,29 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
         position = holder.getAdapterPosition();
         Orders orders = ordersList.get(position);
 
-        Glide.with(context).load(orders.getFoodImage()).into(holder.storeImage);
-        holder.clientName.setText(orders.getClientName());
-        holder.clientPhone.setText(orders.getClientPhone());
+        // 读出美食图片
+        String filename = orders.getGoodsID()+".jpg";
+        String path = this.context.getFilesDir().getAbsolutePath();
+        File file = new File(path+"food_"+filename);
+        if(!file.exists()) {
+            // 向服务器请求美食图片并存储
+            String url = IOTool.ip+"resources/food/images/"+filename;
+            String result = IOTool.upAndDown(url, null);
+            IOTool.save(result, "food_"+filename, this.context);
+        }
+
+        // 根据userID得到用户信息
+        int userID = orders.getUserID();
+        String url = IOTool.ip+"user/info.do";
+        List<String> list = new ArrayList<>();
+        list.add("userID_"+userID);
+        String json = IOTool.upAndDown(url, list);
+        Gson gson = new Gson();
+        User user = gson.fromJson(json, User.class);
+
+        Glide.with(context).load(file).into(holder.storeImage);
+        holder.clientName.setText(user.getName());
+        holder.clientPhone.setText(user.getPhone());
     }
 
     @Override
