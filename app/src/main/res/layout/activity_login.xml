@@ -31,7 +31,7 @@
             android:layout_marginBottom="5dp"
             android:textSize="25sp"
             android:gravity="bottom"
-            app:srcCompat="@drawable/ic_phone"/>
+            app:srcCompat="@drawable/ic_username"/>
 
         <EditText
             android:id="@+id/edit_username"

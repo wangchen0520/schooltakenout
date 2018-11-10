@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.wy.schooltakenout.Data.Food;
+import com.wy.schooltakenout.Data.Goods;
 import com.wy.schooltakenout.Tool.OrderView.OrderView;
 import com.wy.schooltakenout.R;
 
@@ -22,7 +22,7 @@ import rx.functions.Action2;
 
 public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     private Context context;
-    private List<Food> foodList;
+    private List<Goods> goodsList;
 
     //用于连接Food列表的项中的各个View
     static class ViewHolder extends RecyclerView.ViewHolder{
@@ -43,8 +43,8 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         }
     }
 
-    public FoodAdapter(List<Food> foodList){
-        this.foodList=foodList;
+    public FoodAdapter(List<Goods> goodsList){
+        this.goodsList = goodsList;
     }
 
     //初始时调用，连接layout
@@ -63,15 +63,15 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         //官方建议不直接使用position，因为可能会变
         position = holder.getAdapterPosition();
-        Food food = foodList.get(position);
+        Goods goods = goodsList.get(position);
 
-        holder.foodName.setText(food.getFoodName());
-        holder.foodPrice.setText(new DecimalFormat("0.00").format(food.getFoodPrice()));
-        Glide.with(context).load(food.getFoodImg()).into(holder.foodImage);
+        holder.foodName.setText(goods.getFoodName());
+        holder.foodPrice.setText(new DecimalFormat("0.00").format(goods.getFoodPrice()));
+        Glide.with(context).load(goods.getFoodImg()).into(holder.foodImage);
 
         //设置数量初始状态
-        if(food.getFoodNum() != 0) {
-            holder.orderView.setState(5, food.getFoodNum());
+        if(goods.getFoodNum() != 0) {
+            holder.orderView.setState(5, goods.getFoodNum());
         }
         //设置点击响应
         holder.orderView.setCallback(new Action2<Integer, Integer>() {
@@ -81,20 +81,20 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
                         holder.getAdapterPosition(),
                         integer2,
                         holder.orderView,
-                        foodList.get(holder.getAdapterPosition()));
+                        goodsList.get(holder.getAdapterPosition()));
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return foodList.size();
+        return goodsList.size();
     }
 
     //设置点击响应
     private OnItemClickListener onItemClickListener;
     public interface OnItemClickListener{
-        void onClickButtom(int position, int variable, OrderView orderView, Food thisFood);
+        void onClickButtom(int position, int variable, OrderView orderView, Goods thisGoods);
     }
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this.onItemClickListener=onItemClickListener;

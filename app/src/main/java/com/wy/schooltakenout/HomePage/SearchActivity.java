@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.wy.schooltakenout.Adapter.SearchAdapter;
-import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 
 import java.util.ArrayList;
@@ -64,15 +64,15 @@ public class SearchActivity extends AppCompatActivity {
         SearchAdapter searchAdapter = new SearchAdapter(searchString, storeNum, chosenFood);
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int position, Store thisStore) {
+            public void onClick(int position, Seller thisSeller) {
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(SearchActivity.this, StoreActivity.class);
-                intent.putExtra("storeNo", thisStore.getStoreID());
-                intent.putExtra("name", thisStore.getStoreName());
-                intent.putExtra("img",  thisStore.getStoreImg());
-                intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
-                intent.putExtra("storeFoodNum", thisStore.getStoreFoodNum());
-                intent.putExtra("storeFee", thisStore.getStoreFee());
+                intent.putExtra("storeNo", thisSeller.getSellerID());
+                intent.putExtra("name", thisSeller.getStoreName());
+                intent.putExtra("img",  thisSeller.getStoreImg());
+                intent.putExtra("tags", (ArrayList<String>) thisSeller.getStoreTags());
+                intent.putExtra("storeFoodNum", thisSeller.getStoreFoodNum());
+                intent.putExtra("storeFee", thisSeller.getStoreFee());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("storeNum", storeNum);
                 for(int i=0; i<storeNum; i++) {

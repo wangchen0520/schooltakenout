@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 
 import java.text.DecimalFormat;
@@ -23,10 +23,10 @@ import java.util.List;
 
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 	private Context context;
-	private List<Store> storeList;
+	private List<Seller> sellerList;
 
-    public StoreAdapter(List<Store> storeList){
-        this.storeList=storeList;
+    public StoreAdapter(List<Seller> sellerList){
+        this.sellerList = sellerList;
     }
 
 	//用于连接Store列表的项中的各个View
@@ -64,17 +64,17 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 	public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
 	    //官方建议不直接使用position，因为可能会变
         position = holder.getAdapterPosition();
-		Store store = storeList.get(position);
+		Seller seller = sellerList.get(position);
 
-		holder.storeName.setText(store.getStoreName());
-		Glide.with(context).load(store.getStoreImg()).into(holder.storeImage);
+		holder.storeName.setText(seller.getStoreName());
+		Glide.with(context).load(seller.getStoreImg()).into(holder.storeImage);
 		//防止标签重复生成
         holder.storeTags.removeAllViews();
         //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
         DisplayMetrics metric = context.getResources().getDisplayMetrics();
         double ddpi = metric.densityDpi / 160.0;
         //动态添加标签
-		for(String storeTag: store.getStoreTags()) {
+		for(String storeTag: seller.getStoreTags()) {
 			TextView tagView = new TextView(context);
 			tagView.setText(storeTag);
 			tagView.setTextSize(12);
@@ -86,7 +86,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 			tagView.getLayoutParams().height = (int) (20 * ddpi);
 		}
 		//配置商家配送费
-		String feeString = "配送费"+(new DecimalFormat("0.00").format(store.getStoreFee()));
+		String feeString = "配送费"+(new DecimalFormat("0.00").format(seller.getStoreFee()));
 		holder.storeFee.setText(feeString);
 
 		//设置点击响应
@@ -94,7 +94,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
             holder.itemView.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                	onItemClickListener.onClick(holder.getAdapterPosition(), storeList.get(holder.getAdapterPosition()));
+                	onItemClickListener.onClick(holder.getAdapterPosition(), sellerList.get(holder.getAdapterPosition()));
                 }
             });
         }
@@ -102,13 +102,13 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 
 	@Override
 	public int getItemCount() {
-		return storeList.size();
+		return sellerList.size();
 	}
 
 	//设置点击响应
     private OnItemClickListener onItemClickListener;
     public interface OnItemClickListener{
-        void onClick(int position, Store thisStore);
+        void onClick(int position, Seller thisSeller);
     }
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this.onItemClickListener=onItemClickListener;

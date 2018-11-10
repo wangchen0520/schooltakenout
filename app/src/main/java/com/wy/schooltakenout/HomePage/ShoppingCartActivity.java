@@ -12,7 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.wy.schooltakenout.Adapter.CartAdapter;
-import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 
 import java.util.ArrayList;
@@ -66,35 +66,35 @@ public class ShoppingCartActivity extends AppCompatActivity {
         //为适配器添加点击事件
         cartAdapter.setOnItemClickListener(new CartAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int position, Store thisStore) {
+            public void onClick(int position, Seller thisSeller) {
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(ShoppingCartActivity.this, StoreActivity.class);
-                intent.putExtra("storeNo", thisStore.getStoreID());
-                intent.putExtra("name", thisStore.getStoreName());
-                intent.putExtra("img",  thisStore.getStoreImg());
-                intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
-                intent.putExtra("storeFoodNum", thisStore.getStoreFoodNum());
-                intent.putExtra("storeFee", thisStore.getStoreFee());
+                intent.putExtra("storeNo", thisSeller.getSellerID());
+                intent.putExtra("name", thisSeller.getStoreName());
+                intent.putExtra("img",  thisSeller.getStoreImg());
+                intent.putExtra("tags", (ArrayList<String>) thisSeller.getStoreTags());
+                intent.putExtra("storeFoodNum", thisSeller.getStoreFoodNum());
+                intent.putExtra("storeFee", thisSeller.getStoreFee());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("storeNum", storeNum);
                 for(int i=0; i<storeNum; i++) {
                     intent.putExtra("chosenFood"+i, chosenFood[i]);
                 }
                 viewPosition = position;
-                storeNo = thisStore.getStoreID();
+                storeNo = thisSeller.getSellerID();
                 startActivityForResult(intent, position);
             }
 
             @Override
-            public void onClickDelete(final int position, final Store thisStore) {
+            public void onClickDelete(final int position, final Seller thisSeller) {
                 new AlertDialog.Builder(ShoppingCartActivity.this)
                         .setTitle("删除这个商店的美食")
                         .setMessage("是否确定")
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                for(int i=0; i<thisStore.getStoreFoodNum(); i++) {
-                                    chosenFood[thisStore.getStoreID()][i] = 0;
+                                for(int i = 0; i< thisSeller.getStoreFoodNum(); i++) {
+                                    chosenFood[thisSeller.getSellerID()][i] = 0;
                                 }
                                 cartAdapter.deleteStore(position);
                             }

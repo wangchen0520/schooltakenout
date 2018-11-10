@@ -13,21 +13,40 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wy.schooltakenout.Adapter.StoreAdapter;
-import com.wy.schooltakenout.Data.Store;
+import com.wy.schooltakenout.Data.Seller;
+import com.wy.schooltakenout.Data.User;
 import com.wy.schooltakenout.HomePage.SearchActivity;
 import com.wy.schooltakenout.HomePage.ShoppingCartActivity;
 import com.wy.schooltakenout.HomePage.StoreActivity;
 import com.wy.schooltakenout.R;
+import com.wy.schooltakenout.Tool.IOTool;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+    private User user;
+    private int[][] shoppingFood;
+    private int storeNum;
+    //测试数据
+//    private int storeNum = 10;
+
     public static HomeFragment newInstance() {
         return new HomeFragment();
+    }
+
+    // 需要传递参数
+    public static HomeFragment newInstance(String userID) {
+        HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putString("userID", userID);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     public HomeFragment() {
@@ -46,12 +65,13 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private int[][] shoppingFood;
-    //测试数据
-    private int storeNum = 10;
-
     private void init(View view) {
-        //获取布局中的组件
+        // 一些变量
+        String url;
+        String json;
+        Gson gson = new Gson();
+
+        // 获取布局中的组件
         final EditText searchView = view.findViewById(R.id.edit_search);
         ImageButton searchButton = view.findViewById(R.id.imageButton_search);
         RecyclerView storeView = view.findViewById(R.id.store_view);
@@ -62,20 +82,38 @@ public class HomeFragment extends Fragment {
             this.getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         }
 
-        List<Store> storeList = new ArrayList<>();
-        storeList.clear();
-        Store store;
-        //测试数据
-        List<String> storeTags = new ArrayList<>();
-        storeTags.add("不好吃");
-        storeTags.add("冷饮");
+        // 获取传入的UserID
+        String userID = getArguments().getString("userID");
+        // 获取User信息
+        url = IOTool.ip+"user/info.do";
+        List<String> userInfoList = new ArrayList<>();
+        userInfoList.add("userID_"+userID);
+        json = IOTool.upAndDown(url, userInfoList);
+        // 存储User信息
+        user = gson.fromJson(json, User.class);
 
-        for(int i=0; i<storeNum; i++) {
-            //测试数据
-            store = new Store(i, "食堂"+i, R.drawable.ic_store_img, storeTags, i+1, 2.00);
+        // 从服务器获取商家列表
+        url = IOTool.ip+"user/info.do";
+        json = IOTool.upAndDown(url, null);
+        // 解析商家列表
+        List<Seller> sellerList = new ArrayList<>();
+        sellerList.clear();
+        Type type = new TypeToken<List<Seller>>(){}.getType();
+        sellerList = gson.fromJson(json, type);
+        storeNum = sellerList.size();
 
-            storeList.add(store);
-        }
+//        Seller store;
+//        //测试数据
+//        List<String> storeTags = new ArrayList<>();
+//        storeTags.add("不好吃");
+//        storeTags.add("冷饮");
+//
+//        for(int i=0; i<storeNum; i++) {
+//            //测试数据
+//            store = new Seller(i, "食堂"+i, R.drawable.ic_store_img, storeTags, i+1, 2.00);
+//
+//            sellerList.add(store);
+//        }
 
         //初始化购物车
         shoppingFood = new int[storeNum][100];
@@ -99,18 +137,18 @@ public class HomeFragment extends Fragment {
         GridLayoutManager storeLayoutManager=new GridLayoutManager(getActivity(),1);
         storeView.setLayoutManager(storeLayoutManager);
         //设置适配器和点击监听
-        StoreAdapter storeAdapter = new StoreAdapter(storeList);
+        StoreAdapter storeAdapter = new StoreAdapter(sellerList);
         storeAdapter.setOnItemClickListener(new StoreAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int position, Store thisStore) {
+            public void onClick(int position, Seller thisSeller) {
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(getActivity(), StoreActivity.class);
-                intent.putExtra("storeNo", thisStore.getStoreID());
-                intent.putExtra("name", thisStore.getStoreName());
-                intent.putExtra("img",  thisStore.getStoreImg());
-                intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
-                intent.putExtra("storeFoodNum", thisStore.getStoreFoodNum());
-                intent.putExtra("storeFee", thisStore.getStoreFee());
+                intent.putExtra("storeNo", thisSeller.getSellerID());
+//                intent.putExtra("name", thisSeller.getStoreName());
+//                intent.putExtra("img",  thisSeller.getStoreImg());
+//                intent.putExtra("tags", (ArrayList<String>) thisSeller.getStoreTags());
+//                intent.putExtra("storeFoodNum", thisSeller.getStoreFoodNum());
+//                intent.putExtra("storeFee", thisSeller.getStoreFee());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("storeNum", storeNum);
                 for(int i=0; i<storeNum; i++) {

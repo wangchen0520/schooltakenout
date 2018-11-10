@@ -1,6 +1,7 @@
 package com.wy.schooltakenout.LoginPage;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.wy.schooltakenout.Data.Store;
 import com.wy.schooltakenout.MainActivity;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.StorePage.StorePageActivity;
@@ -26,6 +26,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //设置竖屏
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         init();
     }
 
@@ -51,51 +53,85 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
+        String url;
         Intent intent;
         //测试数据
-        List<String> storeTags = new ArrayList<>();
-        storeTags.add("不好吃");
-        storeTags.add("冷饮");
-        Store thisStore = new Store(1, "食堂"+1, R.drawable.ic_store_img, storeTags, 2, 2.00);
-        String url;
-        String json;
+//        List<String> storeTags = new ArrayList<>();
+//        storeTags.add("不好吃");
+//        storeTags.add("冷饮");
+//        Seller thisStore = new Seller(1, "食堂"+1, R.drawable.ic_store_img, storeTags, 2, 2.00);
 
         switch (view.getId()) {
             case R.id.button_login:
-                intent = new Intent(LoginActivity.this, MainActivity.class);
-                String username = userPhoneEdit.getText().toString();
+                // 获取登录信息
+                String phone = userPhoneEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
-                if(username.equals("123") && password.equals("123")) {
-                    url = "http://47.107.145.127:8081/resources/head/1.jpg";
-                    json = IOTool.upAndDown(url);
-                    if(json.equals("")) {
-                        Toast.makeText(this, "请求失败", Toast.LENGTH_LONG).show();
+                // 判断登录信息完整性
+                if(!phone.equals("") && !password.equals("")) {
+                    // 得到url
+                    url = IOTool.ip + "user/login.do";
+                    // 将数据封装
+                    List<String> list = new ArrayList<>();
+                    list.add("phone_"+phone);
+                    list.add("passWord_"+password);
+                    // 发送往服务器
+                    String result = IOTool.upAndDown(url, list);
+                    // 对服务器返回内容进行处理
+                    if(result == null) {
+                        Toast.makeText(LoginActivity.this, "服务器连接失败", Toast.LENGTH_LONG).show();
+                    } else if(result.equals("0")) {
+                        Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
                     } else {
-                        IOTool.save("已登录", "login", this);
-                        Toast.makeText(this, json, Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                        // 保存登录状态
+                        IOTool.save("已登录", "login", LoginActivity.this);
+                        // result即为userID，将其传入MainActivity
+                        intent = new Intent(LoginActivity.this, MainActivity.class);
+                        intent.putExtra("userID", result);
+                        startActivity(intent);
                     }
-                    startActivity(intent);
-                }
-                else {
-                    Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
-                }
+                } else
+                    Toast.makeText(LoginActivity.this, "请填写完整", Toast.LENGTH_LONG).show();
                 break;
             case R.id.button_login_store:
-                intent = new Intent(LoginActivity.this, StorePageActivity.class);
-                String storename = userPhoneEdit.getText().toString();
-                String storePassword = passwordEdit.getText().toString();
-                if(storename.equals("123") && storePassword.equals("123")) {
-                    // 测试数据
-                    intent.putExtra("storeNo", thisStore.getStoreID());
-                    intent.putExtra("name", thisStore.getStoreName());
-                    intent.putExtra("img",  thisStore.getStoreImg());
-                    intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
-                    intent.putExtra("storeFoodNum", thisStore.getStoreFoodNum());
-                    intent.putExtra("storeFee", thisStore.getStoreFee());
-                    startActivity(intent);
-                } else {
+                // 得到url
+                url = IOTool.ip + "seller/login.do";
+                // 将数据封装
+                String sellerName = userPhoneEdit.getText().toString();
+                String sellerPassword = passwordEdit.getText().toString();
+                List<String> list = new ArrayList<>();
+                list.add("sellID_"+sellerName);
+                list.add("passWord_"+sellerPassword);
+                // 发送往服务器
+                String result = IOTool.upAndDown(url, list);
+                // 对服务器返回内容进行处理
+                if(result == null) {
+                    Toast.makeText(LoginActivity.this, "服务器连接失败", Toast.LENGTH_LONG).show();
+                } else if(result.equals("0")) {
                     Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                    // result即为sellerID，将其传入StorePageActivity
+                    intent = new Intent(LoginActivity.this, StorePageActivity.class);
+                    intent.putExtra("storeID", result);
+                    startActivity(intent);
                 }
+
+//                intent = new Intent(LoginActivity.this, StorePageActivity.class);
+//                String storename = userPhoneEdit.getText().toString();
+//                String storePassword = passwordEdit.getText().toString();
+//                if(storename.equals("123") && storePassword.equals("123")) {
+                    // 测试数据
+//                    intent.putExtra("storeNo", thisStore.getSellerID());
+//                    intent.putExtra("name", thisStore.getStoreName());
+//                    intent.putExtra("img",  thisStore.getStoreImg());
+//                    intent.putExtra("tags", (ArrayList<String>) thisStore.getStoreTags());
+//                    intent.putExtra("storeFoodNum", thisStore.getStoreFoodNum());
+//                    intent.putExtra("storeFee", thisStore.getStoreFee());
+//                    startActivity(intent);
+//                } else {
+//                    Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
+//                }
                 break;
             case R.id.button_signin:
                 intent = new Intent(LoginActivity.this, SigninActivity.class);

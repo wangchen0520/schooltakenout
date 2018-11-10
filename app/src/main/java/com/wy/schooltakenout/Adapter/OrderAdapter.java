@@ -11,17 +11,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.wy.schooltakenout.Data.Order;
+import com.wy.schooltakenout.Data.Orders;
 import com.wy.schooltakenout.R;
 
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
     private Context context;
-    private List<Order> orderList;
+    private List<Orders> ordersList;
 
-    public OrderAdapter(List<Order> orderList){
-        this.orderList = orderList;
+    public OrderAdapter(List<Orders> ordersList){
+        this.ordersList = ordersList;
     }
 
     //用于连接Store列表的项中的各个View
@@ -57,15 +57,15 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         //官方建议不直接使用position，因为可能会变
         position = holder.getAdapterPosition();
-        Order order = orderList.get(position);
+        Orders orders = ordersList.get(position);
 
-        Glide.with(context).load(order.getFoodImage()).into(holder.storeImage);
-        holder.clientName.setText(order.getClientName());
-        holder.clientPhone.setText(order.getClientPhone());
+        Glide.with(context).load(orders.getFoodImage()).into(holder.storeImage);
+        holder.clientName.setText(orders.getClientName());
+        holder.clientPhone.setText(orders.getClientPhone());
     }
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return ordersList.size();
     }
 }
