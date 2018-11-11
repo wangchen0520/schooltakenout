@@ -18,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.wy.schooltakenout.Adapter.StoreAdapter;
 import com.wy.schooltakenout.Data.Seller;
-import com.wy.schooltakenout.Data.User;
 import com.wy.schooltakenout.HomePage.SearchActivity;
 import com.wy.schooltakenout.HomePage.ShoppingCartActivity;
 import com.wy.schooltakenout.HomePage.StoreActivity;
@@ -26,7 +25,6 @@ import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -87,11 +85,12 @@ public class HomeFragment extends Fragment {
         url = IOTool.ip+"user/info.do";
         json = IOTool.upAndDown(url, null);
         // 解析商家列表
-        List<Seller> sellerList = new ArrayList<>();
-        sellerList.clear();
         Type type = new TypeToken<List<Seller>>(){}.getType();
-        sellerList = gson.fromJson(json, type);
+        List<Seller> sellerList = gson.fromJson(json, type);
         sellerNum = sellerList.size();
+        for(int i=0; i<sellerList.size(); i++) {
+            sellerList.get(i).setSellerPosition(i);
+        }
 
         //初始化购物车
         shoppingFood = new int[sellerNum][100];
@@ -119,10 +118,11 @@ public class HomeFragment extends Fragment {
         StoreAdapter storeAdapter = new StoreAdapter(sellerList);
         storeAdapter.setOnItemClickListener(new StoreAdapter.OnItemClickListener() {
             @Override
-            public void onClick(int position, Seller thisSeller) {
+            public void onClick(Seller thisSeller) {
                 //进行页面跳转并传递商店数据和购买过的数据
                 Intent intent = new Intent(getActivity(), StoreActivity.class);
                 intent.putExtra("sellerID", thisSeller.getSellerID());
+                intent.putExtra("sellerPosition", thisSeller.getSellerPosition());
                 intent.putExtra("userID", userID);
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("sellerNum", sellerNum);
@@ -139,8 +139,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), ShoppingCartActivity.class);
-                intent.putExtra("sellerNum", sellerNum);
                 intent.putExtra("userID", userID);
+                intent.putExtra("sellerNum", sellerNum);
                 for(int i=0; i<sellerNum; i++) {
                     intent.putExtra("chosenFood"+i, shoppingFood[i]);
                 }

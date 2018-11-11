@@ -77,6 +77,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 Intent intent = new Intent(ShoppingCartActivity.this, StoreActivity.class);
                 intent.putExtra("sellerID", thisSeller.getSellerID());
                 intent.putExtra("userID", userID);
+                intent.putExtra("sellerPosition", thisSeller.getSellerPosition());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("sellerNum", sellerNum);
                 for(int i=0; i<sellerNum; i++) {
@@ -105,7 +106,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                 List<Goods> goodsList = gson.fromJson(json, type);
 
                                 for(int i = 0; i< goodsList.size(); i++) {
-                                    chosenFood[thisSeller.getSellerID()][i] = 0;
+                                    chosenFood[thisSeller.getSellerPosition()][i] = 0;
                                 }
                                 cartAdapter.deleteStore(position);
                             }
@@ -141,7 +142,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 }
             }
             //对改变的美食在页面上进行刷新
-            cartAdapter.changeFood(position, sellerID, chosenFood[sellerID]);
+            cartAdapter.changeFood(position, chosenFood[sellerID]);
         }
     }
 

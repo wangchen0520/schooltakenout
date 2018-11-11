@@ -47,6 +47,9 @@ public class CartAdapter extends RecyclerView.Adapter {
         // 解析商家列表
         type = new TypeToken<List<Seller>>(){}.getType();
         List<Seller> sellerList = gson.fromJson(json, type);
+        for(int i=0; i<sellerList.size(); i++) {
+            sellerList.get(i).setSellerPosition(i);
+        }
 
         // 遍历商家列表，找到数量大于0的美食
         int flag;
@@ -238,20 +241,16 @@ public class CartAdapter extends RecyclerView.Adapter {
     }
 
     //动态改变商家中选择的美食变化，position为添加的商家View位置
-    public void changeFood(int position, int sellerID, int[] changedFoods) {
-        // 从服务器获取商家信息
-        String url = IOTool.ip+"seller/info.do";
-        String json = IOTool.upAndDown(url, null);
-        Gson gson = new Gson();
-        // 解析商家信息
-        Seller seller = gson.fromJson(json, Seller.class);
+    public void changeFood(int position, int[] changedFoods) {
+        Seller seller = (Seller) chosenList.get(position);
 
         // 获取该商店的美食列表
-        url = IOTool.ip+"good/list.do";
+        String url = IOTool.ip+"good/list.do";
         List<String> list = new ArrayList<>();
         list.add("sellerID_"+seller.getSellerID());
-        json = IOTool.upAndDown(url, list);
+        String json = IOTool.upAndDown(url, list);
         Type type = new TypeToken<List<Goods>>(){}.getType();
+        Gson gson = new Gson();
         List<Goods> goodsList = gson.fromJson(json, type);
 
         // 先删除

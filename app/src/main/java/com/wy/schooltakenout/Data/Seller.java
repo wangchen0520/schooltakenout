@@ -1,13 +1,20 @@
 package com.wy.schooltakenout.Data;
 
-import java.util.List;
-
 //主界面商店的类，含商店名、商店图片与标签
 public class Seller {
 	private int sellerID;
 	private String name;
 	private String address;
 	private double account;
+	private int sellerPosition;
+
+	public Seller(int sellerID, String name, String address, double account, int sellerPosition) {
+		this.sellerID = sellerID;
+		this.name = name;
+		this.address = address;
+		this.account = account;
+		this.sellerPosition = sellerPosition;
+	}
 
 	public Seller(int sellerID, String name, String address, double account) {
 		this.sellerID = sellerID;
@@ -46,5 +53,13 @@ public class Seller {
 
 	public void setAccount(double account) {
 		this.account = account;
+	}
+
+	public int getSellerPosition() {
+		return sellerPosition;
+	}
+
+	public void setSellerPosition(int sellerPosition) {
+		this.sellerPosition = sellerPosition;
 	}
 }

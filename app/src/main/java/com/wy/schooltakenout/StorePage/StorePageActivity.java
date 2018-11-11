@@ -54,6 +54,7 @@ public class StorePageActivity extends AppCompatActivity {
         list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
         thisSeller = gson.fromJson(json, Seller.class);
+        thisSeller.setSellerPosition(0);
 
         // 获取商店的订单数据
         url = IOTool.ip+"orders/list.do";
@@ -62,7 +63,6 @@ public class StorePageActivity extends AppCompatActivity {
         json = IOTool.upAndDown(url, list);
         Type type = new TypeToken<List<Orders>>(){}.getType();
         final List<Orders> ordersList = gson.fromJson(json, type);
-
 
         // 读出商家头像
         String filename = thisSeller.getSellerID()+".jpg";

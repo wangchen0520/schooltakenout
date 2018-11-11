@@ -15,6 +15,13 @@ public class Goods {
         this.num = num;
     }
 
+    public Goods(int goodsID, int sellerID, String name, double price) {
+        this.goodsID = goodsID;
+        this.sellerID = sellerID;
+        this.name = name;
+        this.price = price;
+    }
+
     public int getGoodsID() {
         return goodsID;
     }

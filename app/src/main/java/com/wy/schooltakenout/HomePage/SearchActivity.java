@@ -59,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
         GridLayoutManager foodLayoutManager=new GridLayoutManager(this,1);
         searchList.setLayoutManager(foodLayoutManager);
         //设置适配器，并设置点击事件
-        SearchAdapter searchAdapter = new SearchAdapter(searchString, sellerNum, chosenFood);
+        SearchAdapter searchAdapter = new SearchAdapter(searchString);
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void onClick(int position, Seller thisSeller) {
@@ -67,6 +67,7 @@ public class SearchActivity extends AppCompatActivity {
                 Intent intent = new Intent(SearchActivity.this, StoreActivity.class);
                 intent.putExtra("sellerID", thisSeller.getSellerID());
                 intent.putExtra("userID", userID);
+                intent.putExtra("sellerPosition", thisSeller.getSellerPosition());
                 //将所有购物车的数据全发过去，防止数据丢失
                 intent.putExtra("sellerNum", sellerNum);
                 for(int i=0; i<sellerNum; i++) {

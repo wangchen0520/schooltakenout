@@ -29,7 +29,7 @@ public class SearchAdapter extends RecyclerView.Adapter {
     private List<Object> searchList;
     private final int ITEM_STORE = 1, ITEM_FOOD = 2;
 
-    public SearchAdapter(String searchString, int sellerNum, int[][] chosenFood) {
+    public SearchAdapter(String searchString) {
         searchList = new ArrayList<>();
 
         // 从服务器获取商家列表
@@ -39,6 +39,9 @@ public class SearchAdapter extends RecyclerView.Adapter {
         Type type = new TypeToken<List<Seller>>(){}.getType();
         Gson gson = new Gson();
         List<Seller> sellerList = gson.fromJson(json, type);
+        for(int i=0; i<sellerList.size(); i++) {
+            sellerList.get(i).setSellerPosition(i);
+        }
 
         int flag;
         for(int i=0; i<sellerList.size(); i++) {

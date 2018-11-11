@@ -45,6 +45,7 @@ import java.util.Map;
 public class StoreActivity extends AppCompatActivity {
     //进行点餐所需的数据
     private Seller thisSeller;
+    private int sellerPosition;
     private int sellerNum;
     private int[] chosenNum;
     private double totalPrice;
@@ -85,8 +86,10 @@ public class StoreActivity extends AppCompatActivity {
         thisSeller = gson.fromJson(json, Seller.class);
 
         sellerNum = intent.getIntExtra("sellerNum", 0);
+        sellerPosition = intent.getIntExtra("sellerPosition", 0);
+        thisSeller.setSellerPosition(sellerPosition);
         userID = intent.getIntExtra("userID", 0);
-        chosenNum = intent.getIntArrayExtra("chosenFood"+sellerID);
+        chosenNum = intent.getIntArrayExtra("chosenFood"+sellerPosition);
 
         // 获取商店的美食数据
         url = IOTool.ip+"good/list.do";
@@ -97,10 +100,8 @@ public class StoreActivity extends AppCompatActivity {
         //获取布局中的构件
         ImageView imageView = findViewById(R.id.store_img);
         TextView nameView = findViewById(R.id.store_name);
-//        LinearLayout tagsLayout = findViewById(R.id.store_tags);
         RecyclerView foodView = findViewById(R.id.store_foods);
         final TextView totalPriceView = findViewById(R.id.buy_total_price);
-        final TextView feeView = findViewById(R.id.buy_fee);
         Button buyButton = findViewById(R.id.buy);
         Toolbar toolbar = findViewById(R.id.store_toolbar);
         //将Toolbar上标题改为商店名并添加回退按钮，实现回退功能
@@ -135,23 +136,6 @@ public class StoreActivity extends AppCompatActivity {
         }
         totalPriceView.setText(new DecimalFormat("0.00").format(totalPrice));
 
-        String feeString = "配送费"+(new DecimalFormat("0.00").format(thisSeller.getAccount()));
-        feeView.setText(feeString);
-        //获取屏幕dpi，使标签可以正常显示（pixel会受分辨率影响，需要转化为dp）
-//        DisplayMetrics metric = getResources().getDisplayMetrics();
-//        double ddpi = metric.densityDpi / 160.0;
-        //添加tag栏
-//        for(String storeTag: thisSeller.getStoreTags()) {
-//            TextView tagView = new TextView(this);
-//            tagView.setText(storeTag);
-//            tagView.setTextSize(14);
-//            tagView.setTextColor(Color.rgb(143, 143, 143));
-//            tagView.setGravity(Gravity.CENTER);
-//            tagsLayout.addView(tagView);
-//            tagView.getLayoutParams().width = (int) (54 * ddpi);
-//            tagView.getLayoutParams().height = (int) (27 * ddpi);
-//        }
-
         //添加美食数据
         //必要，但是不知道有什么用
         GridLayoutManager foodLayoutManager=new GridLayoutManager(this,1);
@@ -185,7 +169,7 @@ public class StoreActivity extends AppCompatActivity {
                     Toast.makeText(StoreActivity.this, "(#`O′)还什么都没买呢！", Toast.LENGTH_SHORT).show();
                 } else {
                     //调用支付宝接口进行支付
-                    pay(totalPrice+ thisSeller.getAccount());
+                    pay(totalPrice);
                 }
             }
         });
