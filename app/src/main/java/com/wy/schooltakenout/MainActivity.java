@@ -1,5 +1,6 @@
 package com.wy.schooltakenout;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -117,7 +118,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                     ft.show(mHomeFragment);
                     // 否则是第一次切换则加入fragment1，注意加入后是会显示出来的。replace方法也是先remove后add
                 else {
-                    mHomeFragment = HomeFragment.newInstance();
+                    Intent intent = getIntent();
+                    int userID = intent.getIntExtra("userID", 0);
+                    mHomeFragment = HomeFragment.newInstance(userID);
                     ft.add(R.id.tb, mHomeFragment);
                 }
                 break;
@@ -133,7 +136,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationB
                 if (mMyinfoFragment != null)
                     ft.show(mMyinfoFragment);
                 else {
-                    mMyinfoFragment = MyinfoFragment.newInstance();
+                    Intent intent = getIntent();
+                    int userID = intent.getIntExtra("userID", 0);
+                    mMyinfoFragment = MyinfoFragment.newInstance(userID);
                     ft.add(R.id.tb, mMyinfoFragment);
                 }
                 break;

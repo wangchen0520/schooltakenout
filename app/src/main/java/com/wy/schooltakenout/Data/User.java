@@ -2,15 +2,15 @@ package com.wy.schooltakenout.Data;
 
 public class User {
     private int userID;
-    private String username;
-    private String userPhone;
-    private String userPassword;
+    private String name;
+    private String phone;
+    private String passWord;
 
-    public User(int userID, String username, String userPhone, String userPassword) {
+    public User(int userID, String name, String phone, String passWord) {
         this.userID = userID;
-        this.username = username;
-        this.userPhone = userPhone;
-        this.userPassword = userPassword;
+        this.name = name;
+        this.phone = phone;
+        this.passWord = passWord;
     }
 
     public int getUserID() {
@@ -21,27 +21,27 @@ public class User {
         this.userID = userID;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getUserPhone() {
-        return userPhone;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getUserPassword() {
-        return userPassword;
+    public String getPassWord() {
+        return passWord;
     }
 
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+    public void setPassWord(String passWord) {
+        this.passWord = passWord;
     }
 }

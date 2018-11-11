@@ -33,25 +33,5 @@
 			android:textSize="20sp"
 			android:gravity="top|start"/>
 
-		<LinearLayout
-			android:id="@+id/store_tags"
-			android:layout_width="match_parent"
-			android:layout_height="30dp"
-			android:layout_alignTop="@id/store_name"
-			android:layout_toEndOf="@id/store_name"
-			android:layout_alignBottom="@id/store_name"
-			android:orientation="horizontal"
-			android:gravity="end"/>
-
-		<TextView
-			android:id="@+id/store_fee"
-			android:layout_width="wrap_content"
-			android:layout_height="15dp"
-			android:layout_toEndOf="@id/store_img"
-			android:layout_alignBottom="@id/store_img"
-			android:text="配送费2.00"
-			android:textColor="@color/gray"
-			android:textSize="12sp"/>
-
 	</RelativeLayout>
 </android.support.v7.widget.CardView>

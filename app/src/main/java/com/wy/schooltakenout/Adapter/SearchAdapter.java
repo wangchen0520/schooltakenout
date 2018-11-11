@@ -11,10 +11,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.wy.schooltakenout.Data.Food;
-import com.wy.schooltakenout.Data.Store;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.wy.schooltakenout.Data.Goods;
+import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
+import com.wy.schooltakenout.Tool.IOTool;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,32 +32,48 @@ public class SearchAdapter extends RecyclerView.Adapter {
     private List<Object> searchList;
     private final int ITEM_STORE = 1, ITEM_FOOD = 2;
 
-    public SearchAdapter(String searchString, int storeNum, int[][] chosenFood) {
+    public SearchAdapter(String searchString) {
         searchList = new ArrayList<>();
 
-        Store store;
-        List<Food> storeFood = new ArrayList<>();
+        // 从服务器获取商家列表
+        String url = IOTool.ip+"read/seller/list.do";
+        IOTool.upAndDown(url, null);
+        JSONArray json = IOTool.getDateArray();
+        // 解析商家列表
+        Type type = new TypeToken<List<Seller>>(){}.getType();
+        Gson gson = new Gson();
+        List<Seller> sellerList = gson.fromJson(json.toString(), type);
+        for(int i=0; i<sellerList.size(); i++) {
+            sellerList.get(i).setSellerPosition(i);
+        }
+
         int flag;
-        //测试数据
-        List<String> storeTags = new ArrayList<>();
-        storeTags.add("不好吃");
-        storeTags.add("冷饮");
-        for(int i=0; i<storeNum; i++) {
+        for(int i=0; i<sellerList.size(); i++) {
             flag = 0;
-            store = new Store(i, "食堂" + i, R.drawable.ic_store_img, storeTags, i+1, 2.00);
-            if(store.getStoreName().contains(searchString))
+            Seller seller = sellerList.get(i);
+            if(seller.getName().contains(searchString))
                 flag = 1;
-            storeFood.clear();
-            for(int j=0; j<store.getStoreFoodNum(); j++) {
-                Food food = new Food(j, "泡椒风爪"+j, "食堂"+i, R.drawable.ic_food, 5.60, chosenFood[i][j]);
-                if(food.getFoodName().contains(searchString)) {
+            // 获取该商店的美食列表
+            url = IOTool.ip+"read/good/list.do";
+            List<String> list = new ArrayList<>();
+            list.add("sellerID="+seller.getSellerID());
+            IOTool.upAndDown(url, list);
+            json = IOTool.getDateArray();
+            type = new TypeToken<List<Goods>>(){}.getType();
+            List<Goods> goodsList = gson.fromJson(json.toString(), type);
+
+            List<Goods> foundGoods = new ArrayList<>();
+
+            for(int j = 0; j< goodsList.size(); j++) {
+                Goods goods = goodsList.get(j);
+                if(goods.getName().contains(searchString)) {
                     flag = 1;
-                    storeFood.add(food);
+                    foundGoods.add(goods);
                 }
             }
             if(flag == 1) {
-                searchList.add(store);
-                searchList.addAll(storeFood);
+                searchList.add(seller);
+                searchList.addAll(foundGoods);
             }
         }
     }
@@ -108,27 +132,41 @@ public class SearchAdapter extends RecyclerView.Adapter {
         //按照ViewHolder的类型进行View的生成
         if(holder instanceof ViewHolderStore) {
             final ViewHolderStore viewHolderStore = (ViewHolderStore) holder;
-            final Store store = (Store) searchList.get(position);
+            final Seller seller = (Seller) searchList.get(position);
 
-            Glide.with(context).load(store.getStoreImg()).into(viewHolderStore.storeImage);
-            viewHolderStore.storeName.setText(store.getStoreName());
+            // 读出商家头像
+            String filename = seller.getSellerID()+".jpg";
+            String url = IOTool.pictureIp+"resources/seller/head/"+filename;
+            String path = this.context.getFileStreamPath("store_"+filename).getPath();
+            File file = new File(path);
+            IOTool.savePicture(url, path);
+
+            Glide.with(context).load(file).into(viewHolderStore.storeImage);
+            viewHolderStore.storeName.setText(seller.getName());
 
             //设置点击响应
             if(onItemClickListener!= null){
                 viewHolderStore.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        onItemClickListener.onClick(holder.getAdapterPosition(), store);
+                        onItemClickListener.onClick(holder.getAdapterPosition(), seller);
                     }
                 });
             }
         } else if(holder instanceof ViewHolderFood) {
             final ViewHolderFood viewHolderFood = (ViewHolderFood) holder;
-            Food food = (Food) searchList.get(position);
+            Goods goods = (Goods) searchList.get(position);
 
-            Glide.with(context).load(food.getFoodImg()).into(viewHolderFood.foodImage);
-            viewHolderFood.foodName.setText(food.getFoodName());
-            String foodPrice = new DecimalFormat("0.00").format(food.getFoodPrice());
+            // 读出美食图片
+            String filename = goods.getGoodsID()+".jpg";
+            String url = IOTool.pictureIp+"resources/food/images/"+filename;
+            String path = this.context.getFileStreamPath("food_"+filename).getPath();
+            File file = new File(path);
+            IOTool.savePicture(url, path);
+
+            Glide.with(context).load(file).into(viewHolderFood.foodImage);
+            viewHolderFood.foodName.setText(goods.getName());
+            String foodPrice = new DecimalFormat("0.00").format(goods.getPrice());
             viewHolderFood.foodPrice.setText(foodPrice);
         }
     }
@@ -143,9 +181,9 @@ public class SearchAdapter extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         int viewType = 0;
 
-        if (searchList.get(position) instanceof Store) {
+        if (searchList.get(position) instanceof Seller) {
             viewType = ITEM_STORE;
-        } else if (searchList.get(position) instanceof Food) {
+        } else if (searchList.get(position) instanceof Goods) {
             viewType = ITEM_FOOD;
         }
 
@@ -155,7 +193,7 @@ public class SearchAdapter extends RecyclerView.Adapter {
     //设置点击响应
     private OnItemClickListener onItemClickListener;
     public interface OnItemClickListener{
-        void onClick(int position, Store thisStore);
+        void onClick(int position, Seller thisSeller);
     }
     public void setOnItemClickListener(OnItemClickListener onItemClickListener ){
         this.onItemClickListener=onItemClickListener;

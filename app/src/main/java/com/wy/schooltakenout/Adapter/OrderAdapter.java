@@ -11,17 +11,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.wy.schooltakenout.Data.Order;
+import com.google.gson.Gson;
+import com.wy.schooltakenout.Data.Orders;
+import com.wy.schooltakenout.Data.User;
 import com.wy.schooltakenout.R;
+import com.wy.schooltakenout.Tool.IOTool;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
     private Context context;
-    private List<Order> orderList;
+    private List<Orders> ordersList;
 
-    public OrderAdapter(List<Order> orderList){
-        this.orderList = orderList;
+    public OrderAdapter(List<Orders> ordersList){
+        this.ordersList = ordersList;
     }
 
     //用于连接Store列表的项中的各个View
@@ -57,15 +65,32 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         //官方建议不直接使用position，因为可能会变
         position = holder.getAdapterPosition();
-        Order order = orderList.get(position);
+        Orders orders = ordersList.get(position);
 
-        Glide.with(context).load(order.getFoodImage()).into(holder.storeImage);
-        holder.clientName.setText(order.getClientName());
-        holder.clientPhone.setText(order.getClientPhone());
+        // 读出美食图片
+        String filename = orders.getGoodsID()+".jpg";
+        String url = IOTool.pictureIp+"resources/food/images/"+filename;
+        String path = this.context.getFileStreamPath("food_"+filename).getPath();
+        File file = new File(path);
+        IOTool.savePicture(url, path);
+
+        // 根据userID得到用户信息
+        int userID = orders.getUserID();
+        url = IOTool.ip+"read/user/info.do";
+        List<String> list = new ArrayList<>();
+        list.add("userID="+userID);
+        IOTool.upAndDown(url, list);
+        JSONObject json = IOTool.getData();
+        Gson gson = new Gson();
+        User user = gson.fromJson(json.toString(), User.class);
+
+        Glide.with(context).load(file).into(holder.storeImage);
+        holder.clientName.setText(user.getName());
+        holder.clientPhone.setText(user.getPhone());
     }
 
     @Override
     public int getItemCount() {
-        return orderList.size();
+        return ordersList.size();
     }
 }

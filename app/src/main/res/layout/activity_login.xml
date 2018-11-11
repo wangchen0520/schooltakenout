@@ -31,7 +31,7 @@
             android:layout_marginBottom="5dp"
             android:textSize="25sp"
             android:gravity="bottom"
-            app:srcCompat="@drawable/ic_phone"/>
+            app:srcCompat="@drawable/ic_username"/>
 
         <EditText
             android:id="@+id/edit_username"
@@ -41,7 +41,8 @@
             android:layout_alignParentEnd="true"
             android:ems="10"
             android:inputType="phone"
-            android:theme="@style/MyLoginEditText"/>
+            android:theme="@style/MyLoginEditText"
+            android:text="13072896518"/>
 
     </RelativeLayout>
 
@@ -72,7 +73,8 @@
             android:layout_alignParentEnd="true"
             android:ems="10"
             android:inputType="textPassword"
-            android:theme="@style/MyLoginEditText"/>
+            android:theme="@style/MyLoginEditText"
+            android:text="wanghao"/>
 
     </RelativeLayout>
 
