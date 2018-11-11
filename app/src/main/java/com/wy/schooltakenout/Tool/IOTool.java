@@ -2,10 +2,14 @@ package com.wy.schooltakenout.Tool;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -13,33 +17,79 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class IOTool {
     private static String result;
-    public static String ip = "http://10.132.3.70:8080/compus_takeout/";
+    // 转发ip
+    public static String ip = "http://47.107.140.236:8080/compus_takeout/";
+    // 直接ip
+    public static String pictureIp = "http://47.107.145.127:8081/";
+    // 本地ip
+//    public static String ip = "http://10.132.3.70:8080/";
+    private static CountDownLatch count;
+    private static int status;
+    private static JSONObject data;
+    private static JSONArray dateArray;
 
-    public static String upAndDown(String url, List<String> list) {
-        int TIME_OUT = 1000;
-        int time = 0;
-        int i = 0;
+    public static void upAndDown(String url, List<String> list) {
         result = "";
+        status = 0;
+        data = null;
+        dateArray = null;
 
         // 有无参数处理方式不同
-        if(list != null) {
-            String[] allStrings = new String[list.size()+1];
-            allStrings[i++] = url;
-            for(String string: list) {
-                allStrings[i++] = string;
-            }
-            new MyTask().execute(allStrings);
-        } else
-            new MyTask().execute(url);
+        new MyThread(url, list).start();
 
-        while(result.equals("") && time < TIME_OUT) {
-            SystemClock.sleep(100);
-            time += 100;
+        // 等待子进程任务完成才运行
+        try {
+            count = new CountDownLatch(1);
+            count.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-        return result;
+
+        // 处理传来的数据
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(result);
+            status = jsonObject.getInt("status");
+            data = jsonObject.getJSONObject("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        // 如果不对就变成数组
+        if(data == null) {
+            try {
+                jsonObject = new JSONObject(result);
+                dateArray = jsonObject.getJSONArray("data");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(data != null) {
+            TestPrinter.print(data.toString());
+        }
+        if(dateArray != null) {
+            try {
+                TestPrinter.print(dateArray.getJSONObject(0).toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static int getStatus() {
+        return status;
+    }
+
+    public static JSONObject getData() {
+        return data;
+    }
+
+    public static JSONArray getDateArray() {
+        return dateArray;
     }
 
     public static void save(String string, String filename, Context context) {
@@ -83,24 +133,33 @@ public class IOTool {
         return fileText;
     }
 
-    //上传异步任务
-    private static class MyTask extends AsyncTask<String, Integer, String> {
-        @Override
-        protected String doInBackground(String... strings) {
-            List<NameValuePair> list = new ArrayList<>();
-            NameValuePair pair;
-            for(int i=1; i<strings.length; i++) {
-                String[] stringPair = strings[i].split("_");
-                pair = new BasicNameValuePair(stringPair[0], stringPair[1]);
-                list.add(pair);
-            }
-            return HttpUtil.doPost(strings[0], list);
+    public static void savePicture(String urlString, String filePath) {
+        HttpUtil.getPicture(urlString, filePath);
+    }
+
+    // 上传子线程
+    private static class MyThread extends Thread {
+        String url;
+        List<String> list;
+
+        public MyThread(String url, List<String> list) {
+            this.url = url;
+            this.list = list;
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            IOTool.result = result;
+        public void run() {
+            String request = "";
+            if(list != null) {
+                for(int i=0; i<list.size(); i++) {
+                    request += list.get(i);
+                    if(i < list.size()-1 ) {
+                        request += "&";
+                    }
+                }
+            }
+            IOTool.result = HttpUtil.doPost(url, request);
+            TestPrinter.print("0_"+result);
+            count.countDown();
         }
     }
 }

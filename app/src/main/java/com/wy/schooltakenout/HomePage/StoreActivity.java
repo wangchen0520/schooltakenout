@@ -34,6 +34,9 @@ import com.wy.schooltakenout.Tool.Pay.PayResult;
 import com.wy.schooltakenout.Tool.Pay.util.OrderInfoUtil2_0;
 import com.wy.schooltakenout.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.reflect.Type;
 import java.sql.Date;
@@ -71,7 +74,6 @@ public class StoreActivity extends AppCompatActivity {
     private void init() {
         String url;
         List<String> list;
-        String json;
         Gson gson = new Gson();
         chosenNum = new int[100];
         totalPrice = 0.00;
@@ -81,9 +83,10 @@ public class StoreActivity extends AppCompatActivity {
         int sellerID = intent.getIntExtra("sellerID", 0);
         url = IOTool.ip+"read/seller/info.do";
         list = new ArrayList<>();
-        list.add("sellerID_"+sellerID);
-        json = IOTool.upAndDown(url, list);
-        thisSeller = gson.fromJson(json, Seller.class);
+        list.add("sellerID="+sellerID);
+        IOTool.upAndDown(url, list);
+        JSONObject jsonObject = IOTool.getData();
+        thisSeller = gson.fromJson(jsonObject.toString(), Seller.class);
 
         sellerNum = intent.getIntExtra("sellerNum", 0);
         sellerPosition = intent.getIntExtra("sellerPosition", 0);
@@ -91,11 +94,12 @@ public class StoreActivity extends AppCompatActivity {
         userID = intent.getIntExtra("userID", 0);
         chosenNum = intent.getIntArrayExtra("chosenFood"+sellerPosition);
 
-        // 获取商店的美食数据
+        // 获取商店的美食列表
         url = IOTool.ip+"read/good/list.do";
-        json = IOTool.upAndDown(url, list);
+        IOTool.upAndDown(url, list);
+        JSONArray jsonArray = IOTool.getDateArray();
         Type type = new TypeToken<List<Goods>>(){}.getType();
-        goodsList = gson.fromJson(json, type);
+        goodsList = gson.fromJson(jsonArray.toString(), type);
         for(int i=0; i<goodsList.size(); i++) {
             goodsList.get(i).setNum(chosenNum[i]);
         }
@@ -122,17 +126,15 @@ public class StoreActivity extends AppCompatActivity {
 
         // 读出商家头像
         String filename = thisSeller.getSellerID()+".jpg";
-        String path = this.getFilesDir().getAbsolutePath();
-        File file = new File(path+"store_"+filename);
-        if(!file.exists()) {
-            // 向服务器请求商家头像并存储
-            url = IOTool.ip+"read/resources/seller/head/"+filename;
-            String result = IOTool.upAndDown(url, null);
-            IOTool.save(result, "store_"+filename, this);
-        }
+        url = IOTool.pictureIp+"resources/seller/head/"+filename;
+        String path = this.getFileStreamPath("store_"+filename).getPath();
+        File file = new File(path);
+        IOTool.savePicture(url, path);
+
         // 使用传输的数据进行构件的初始化赋值
         imageView.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
         nameView.setText(thisSeller.getName());
+
         //使用传过来的数据计算已选美食的总价格
         for(int i = 0; i< goodsList.size(); i++) {
             totalPrice += chosenNum[i] * goodsList.get(i).getPrice();
@@ -143,6 +145,7 @@ public class StoreActivity extends AppCompatActivity {
         //必要，但是不知道有什么用
         GridLayoutManager foodLayoutManager=new GridLayoutManager(this,1);
         foodView.setLayoutManager(foodLayoutManager);
+
         //设置适配器和点击监听
         final FoodAdapter foodAdapter = new FoodAdapter(goodsList);
         foodAdapter.setOnItemClickListener(new FoodAdapter.OnItemClickListener() {
@@ -244,7 +247,7 @@ public class StoreActivity extends AppCompatActivity {
                         }
                         String jsonObject = gson.toJson(ordersList);
                         List<String> jsonList = new ArrayList<>();
-                        jsonList.add(jsonObject);
+                        jsonList.add("json"+jsonObject);
                         IOTool.upAndDown(IOTool.ip+"write/orders/add.do", jsonList);
                         back();
                     } else {

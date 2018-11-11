@@ -41,7 +41,8 @@
             android:layout_alignParentEnd="true"
             android:ems="10"
             android:inputType="phone"
-            android:theme="@style/MyLoginEditText"/>
+            android:theme="@style/MyLoginEditText"
+            android:text="13072896518"/>
 
     </RelativeLayout>
 
@@ -72,7 +73,8 @@
             android:layout_alignParentEnd="true"
             android:ems="10"
             android:inputType="textPassword"
-            android:theme="@style/MyLoginEditText"/>
+            android:theme="@style/MyLoginEditText"
+            android:text="wanghao"/>
 
     </RelativeLayout>
 

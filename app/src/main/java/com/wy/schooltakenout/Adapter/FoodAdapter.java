@@ -16,6 +16,9 @@ import com.wy.schooltakenout.Tool.IOTool;
 import com.wy.schooltakenout.Tool.OrderView.OrderView;
 import com.wy.schooltakenout.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -72,14 +75,10 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
 
         // 读出美食图片
         String filename = goods.getGoodsID()+".jpg";
-        String path = this.context.getFilesDir().getAbsolutePath();
-        File file = new File(path+"food_"+filename);
-        if(!file.exists()) {
-            // 向服务器请求美食图片并存储
-            String url = IOTool.ip+"read/resources/food/images/"+filename;
-            String result = IOTool.upAndDown(url, null);
-            IOTool.save(result, "food_"+filename, this.context);
-        }
+        String url = IOTool.pictureIp+"resources/food/images/"+filename;
+        String path = this.context.getFileStreamPath("food_"+filename).getPath();
+        File file = new File(path);
+        IOTool.savePicture(url, path);
 
         Glide.with(context).load(file).into(holder.foodImage);
 

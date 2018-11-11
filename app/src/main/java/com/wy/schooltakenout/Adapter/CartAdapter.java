@@ -18,8 +18,13 @@ import com.wy.schooltakenout.Data.Goods;
 import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
+import com.wy.schooltakenout.Tool.TestPrinter;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -33,7 +38,7 @@ public class CartAdapter extends RecyclerView.Adapter {
     public CartAdapter(int[][] chosenFood) {
         // 一些变量
         String url;
-        String json;
+        JSONArray json;
         Type type;
         Gson gson = new Gson();
 
@@ -43,10 +48,12 @@ public class CartAdapter extends RecyclerView.Adapter {
 
         // 从服务器获取商家列表
         url = IOTool.ip+"read/seller/list.do";
-        json = IOTool.upAndDown(url, null);
+        IOTool.upAndDown(url, null);
+        json = IOTool.getDateArray();
+
         // 解析商家列表
         type = new TypeToken<List<Seller>>(){}.getType();
-        List<Seller> sellerList = gson.fromJson(json, type);
+        List<Seller> sellerList = gson.fromJson(json.toString(), type);
         for(int i=0; i<sellerList.size(); i++) {
             sellerList.get(i).setSellerPosition(i);
         }
@@ -61,10 +68,11 @@ public class CartAdapter extends RecyclerView.Adapter {
             // 获取该商店的美食列表
             url = IOTool.ip+"read/good/list.do";
             List<String> list = new ArrayList<>();
-            list.add("sellerID_"+seller.getSellerID());
-            json = IOTool.upAndDown(url, list);
+            list.add("sellerID="+seller.getSellerID());
+            IOTool.upAndDown(url, list);
+            json = IOTool.getDateArray();
             type = new TypeToken<List<Goods>>(){}.getType();
-            List<Goods> goodsList = gson.fromJson(json, type);
+            List<Goods> goodsList = gson.fromJson(json.toString(), type);
 
             // 遍历美食列表
             storeGoods.clear();
@@ -149,14 +157,10 @@ public class CartAdapter extends RecyclerView.Adapter {
 
             // 读出商家头像
             String filename = seller.getSellerID()+".jpg";
-            String path = this.context.getFilesDir().getAbsolutePath();
-            File file = new File(path+"store_"+filename);
-            if(!file.exists()) {
-                // 向服务器请求商家头像并存储
-                String url = IOTool.ip+"read/resources/seller/head/"+filename;
-                String result = IOTool.upAndDown(url, null);
-                IOTool.save(result, "store_"+filename, this.context);
-            }
+            String url = IOTool.pictureIp+"resources/seller/head/"+filename;
+            String path = this.context.getFileStreamPath("store_"+filename).getPath();
+            File file = new File(path);
+            IOTool.savePicture(url, path);
 
             Glide.with(context).load(file).into(viewHolderStore.storeImage);
             viewHolderStore.storeName.setText(seller.getName());
@@ -182,14 +186,10 @@ public class CartAdapter extends RecyclerView.Adapter {
 
             // 读出美食图片
             String filename = goods.getGoodsID()+".jpg";
-            String path = this.context.getFilesDir().getAbsolutePath();
-            File file = new File(path+"food_"+filename);
-            if(!file.exists()) {
-                // 向服务器请求美食图片并存储
-                String url = IOTool.ip+"read/resources/food/images/"+filename;
-                String result = IOTool.upAndDown(url, null);
-                IOTool.save(result, "food_"+filename, this.context);
-            }
+            String url = IOTool.pictureIp+"resources/food/images/"+filename;
+            String path = this.context.getFileStreamPath("food_"+filename).getPath();
+            File file = new File(path);
+            IOTool.savePicture(url, path);
 
             Glide.with(context).load(file).into(viewHolderFood.foodImage);
             viewHolderFood.foodName.setText(goods.getName());
@@ -247,11 +247,12 @@ public class CartAdapter extends RecyclerView.Adapter {
         // 获取该商店的美食列表
         String url = IOTool.ip+"read/good/list.do";
         List<String> list = new ArrayList<>();
-        list.add("sellerID_"+seller.getSellerID());
-        String json = IOTool.upAndDown(url, list);
+        list.add("sellerID="+seller.getSellerID());
+        IOTool.upAndDown(url, list);
+        JSONArray json = IOTool.getDateArray();
         Type type = new TypeToken<List<Goods>>(){}.getType();
         Gson gson = new Gson();
-        List<Goods> goodsList = gson.fromJson(json, type);
+        List<Goods> goodsList = gson.fromJson(json.toString(), type);
 
         // 先删除
         deleteStore(position);

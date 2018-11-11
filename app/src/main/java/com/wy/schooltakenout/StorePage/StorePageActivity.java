@@ -19,6 +19,9 @@ import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -38,7 +41,6 @@ public class StorePageActivity extends AppCompatActivity {
     private void init() {
         String url;
         List<String> list;
-        String json;
         Gson gson = new Gson();
         Intent intent = getIntent();
 
@@ -51,29 +53,28 @@ public class StorePageActivity extends AppCompatActivity {
         int sellerID = intent.getIntExtra("sellerID", 0);
         url = IOTool.ip+"read/seller/info.do";
         list = new ArrayList<>();
-        list.add("sellerID_"+sellerID);
-        json = IOTool.upAndDown(url, list);
-        thisSeller = gson.fromJson(json, Seller.class);
+        list.add("sellerID="+sellerID);
+        IOTool.upAndDown(url, list);
+        JSONObject jsonObject = IOTool.getData();
+        thisSeller = gson.fromJson(jsonObject.toString(), Seller.class);
         thisSeller.setSellerPosition(0);
 
         // 获取商店的订单数据
         url = IOTool.ip+"read/orders/list.do";
         list = new ArrayList<>();
-        list.add("sellerID_"+sellerID);
-        json = IOTool.upAndDown(url, list);
+        list.add("sellerID="+sellerID);
+        IOTool.upAndDown(url, list);
+        JSONArray jsonArray = IOTool.getDateArray();
         Type type = new TypeToken<List<Orders>>(){}.getType();
-        final List<Orders> ordersList = gson.fromJson(json, type);
+        final List<Orders> ordersList = gson.fromJson(jsonArray.toString(), type);
 
         // 读出商家头像
         String filename = thisSeller.getSellerID()+".jpg";
-        String path = this.getFilesDir().getAbsolutePath();
-        File file = new File(path+"store_"+filename);
-        if(!file.exists()) {
-            // 向服务器请求商家头像并存储
-            url = IOTool.ip+"read/resources/seller/head/"+filename;
-            String result = IOTool.upAndDown(url, null);
-            IOTool.save(result, "store_"+filename, this);
-        }
+        url = IOTool.pictureIp+"resources/seller/head/"+filename;
+        String path = this.getFileStreamPath("store_"+filename).getPath();
+        File file = new File(path);
+        IOTool.savePicture(url, path);
+
         // 使用传输的数据进行构件的初始化赋值
         imageView.setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
         nameView.setText(thisSeller.getName());

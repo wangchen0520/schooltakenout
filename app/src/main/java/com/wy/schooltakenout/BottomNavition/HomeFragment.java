@@ -23,8 +23,14 @@ import com.wy.schooltakenout.HomePage.ShoppingCartActivity;
 import com.wy.schooltakenout.HomePage.StoreActivity;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
+import com.wy.schooltakenout.Tool.TestPrinter;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -64,7 +70,7 @@ public class HomeFragment extends Fragment {
     private void init(View view) {
         // 一些变量
         String url;
-        String json;
+        JSONArray json;
         Gson gson = new Gson();
 
         // 获取布局中的组件
@@ -82,11 +88,13 @@ public class HomeFragment extends Fragment {
         userID = getArguments().getInt("userID");
 
         // 从服务器获取商家列表
-        url = IOTool.ip+"read/user/info.do";
-        json = IOTool.upAndDown(url, null);
+        url = IOTool.ip+"read/seller/list.do";
+        IOTool.upAndDown(url, null);
+        json = IOTool.getDateArray();
+
         // 解析商家列表
         Type type = new TypeToken<List<Seller>>(){}.getType();
-        List<Seller> sellerList = gson.fromJson(json, type);
+        List<Seller> sellerList = gson.fromJson(json.toString(), type);
         sellerNum = sellerList.size();
         for(int i=0; i<sellerList.size(); i++) {
             sellerList.get(i).setSellerPosition(i);

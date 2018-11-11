@@ -55,17 +55,16 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                     String url = IOTool.ip + "read/user/register.do";
                     // 将数据封装
                     List<String> list = new ArrayList<>();
-                    list.add("name_"+name);
-                    list.add("phone_"+phone);
-                    list.add("password_"+password);
+                    list.add("name="+name);
+                    list.add("phone="+phone);
+                    list.add("password="+password);
                     // 发送往服务器
-                    String result = IOTool.upAndDown(url, list);
+                    IOTool.upAndDown(url, list);
+                    int status = IOTool.getStatus();
                     // 对服务器返回内容进行处理
-                    if(result == null) {
-                        Toast.makeText(SigninActivity.this, "服务器连接失败", Toast.LENGTH_LONG).show();
-                    } else if(result.equals("0")) {
+                    if(status == 0) {
                         Toast.makeText(SigninActivity.this, "注册失败", Toast.LENGTH_LONG).show();
-                    } else {
+                    } else if(status == 1) {
                         Toast.makeText(SigninActivity.this, "注册成功", Toast.LENGTH_LONG).show();
                         finish();
                     }

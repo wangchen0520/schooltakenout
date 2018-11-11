@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.JsonReader;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,9 @@ import com.wy.schooltakenout.MainActivity;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.StorePage.StorePageActivity;
 import com.wy.schooltakenout.Tool.IOTool;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,12 +49,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         // 判断是否登录过
         String login = IOTool.read("login", this);
         String[] strings = login.split("_");
-        if(strings[0].equals("已登录")) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-            intent.putExtra("userID", Integer.parseInt(strings[1]));
-            startActivity(intent);
-            this.overridePendingTransition(0, 0);
-        }
+//        if(strings[0].equals("已登录")) {
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            intent.putExtra("userID", Integer.parseInt(strings[1]));
+//            startActivity(intent);
+//            this.overridePendingTransition(0, 0);
+//        }
     }
 
     @Override
@@ -70,22 +74,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     url = IOTool.ip + "read/user/login.do";
                     // 将数据封装
                     List<String> list = new ArrayList<>();
-                    list.add("phone_"+phone);
-                    list.add("passWord_"+password);
+                    list.add("phone="+phone);
+                    list.add("passWord="+password);
                     // 发送往服务器
-                    String result = IOTool.upAndDown(url, list);
+                    IOTool.upAndDown(url, list);
+                    JSONObject json = IOTool.getData();
+                    int status = IOTool.getStatus();
                     // 对服务器返回内容进行处理
-                    if(result == null) {
-                        Toast.makeText(LoginActivity.this, "服务器连接失败", Toast.LENGTH_LONG).show();
-                    } else if(result.equals("0")) {
+
+                    if(status == 0) {
                         Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
-                    } else {
+                    } else if(status == 1) {
                         Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                        // 将userID从result中解析出来
+                        int userID = 0;
+                        try {
+                            userID = json.getInt("userID");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         // 保存登录状态
-                        IOTool.save("已登录_"+result, "login", LoginActivity.this);
-                        // result即为userID，将其传入MainActivity
+                        IOTool.save("已登录_"+userID, "login", LoginActivity.this);
+
+                        // 将userID传入MainActivity
                         intent = new Intent(LoginActivity.this, MainActivity.class);
-                        intent.putExtra("userID", Integer.parseInt(result));
+                        intent.putExtra("userID", userID);
                         startActivity(intent);
                     }
                 } else
@@ -98,20 +112,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String sellerID = userPhoneEdit.getText().toString();
                 String sellerPassword = passwordEdit.getText().toString();
                 List<String> list = new ArrayList<>();
-                list.add("sellerID_"+sellerID);
-                list.add("passWord_"+sellerPassword);
+                list.add("sellerID="+sellerID);
+                list.add("passWord="+sellerPassword);
                 // 发送往服务器
-                String result = IOTool.upAndDown(url, list);
+                IOTool.upAndDown(url, list);
+                JSONObject json = IOTool.getData();
+                int status = IOTool.getStatus();
                 // 对服务器返回内容进行处理
-                if(result == null) {
-                    Toast.makeText(LoginActivity.this, "服务器连接失败", Toast.LENGTH_LONG).show();
-                } else if(result.equals("0")) {
+                if(status == 0) {
                     Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
-                } else {
+                } else if(status == 1) {
                     Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
                     // result即为sellerID，将其传入StorePageActivity
                     intent = new Intent(LoginActivity.this, StorePageActivity.class);
-                    intent.putExtra("sellerID", result);
+
+                    // 将sellerID从result中解析出来
+                    int sellerIDInt = 0;
+                    try {
+                        sellerIDInt = json.getInt("sellerID");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    intent.putExtra("sellerID", sellerIDInt);
                     startActivity(intent);
                 }
                 break;

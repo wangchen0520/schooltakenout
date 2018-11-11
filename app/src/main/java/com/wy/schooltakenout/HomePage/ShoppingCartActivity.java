@@ -19,6 +19,9 @@ import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,11 +102,12 @@ public class ShoppingCartActivity extends AppCompatActivity {
                                 // 获取该商店的美食列表
                                 String url = IOTool.ip+"read/good/list.do";
                                 List<String> list = new ArrayList<>();
-                                list.add("sellerID_"+thisSeller.getSellerID());
-                                String json = IOTool.upAndDown(url, list);
+                                list.add("sellerID="+thisSeller.getSellerID());
+                                IOTool.upAndDown(url, list);
+                                JSONArray json = IOTool.getDateArray();
                                 Type type = new TypeToken<List<Goods>>(){}.getType();
                                 Gson gson = new Gson();
-                                List<Goods> goodsList = gson.fromJson(json, type);
+                                List<Goods> goodsList = gson.fromJson(json.toString(), type);
 
                                 for(int i = 0; i< goodsList.size(); i++) {
                                     chosenFood[thisSeller.getSellerPosition()][i] = 0;

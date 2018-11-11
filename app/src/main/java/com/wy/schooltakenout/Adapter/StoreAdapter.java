@@ -1,26 +1,22 @@
 package com.wy.schooltakenout.Adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.DisplayMetrics;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
+import com.wy.schooltakenout.Tool.TestPrinter;
 
 import java.io.File;
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
@@ -64,19 +60,16 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
         position = holder.getAdapterPosition();
 		Seller seller = sellerList.get(position);
 
-		holder.storeName.setText(seller.getName());
-
 		// 读出商家头像
 		String filename = seller.getSellerID()+".jpg";
-		String path = this.context.getFilesDir().getAbsolutePath();
-		File file = new File(path+"store_"+filename);
-		if(!file.exists()) {
-			// 向服务器请求商家头像并存储
-			String url = IOTool.ip+"read/resources/seller/head/"+filename;
-			String result = IOTool.upAndDown(url, null);
-			IOTool.save(result, "store_"+filename, this.context);
-		}
+		String url = IOTool.pictureIp+"resources/seller/head/"+filename;
+        String path = this.context.getFileStreamPath("store_"+filename).getPath();
+        TestPrinter.print(path);
+		File file = new File(path);
+		IOTool.savePicture(url, path);
+
 		Glide.with(context).load(file).into(holder.storeImage);
+		holder.storeName.setText(seller.getName());
 
 		//设置点击响应
         if(onItemClickListener!= null){
