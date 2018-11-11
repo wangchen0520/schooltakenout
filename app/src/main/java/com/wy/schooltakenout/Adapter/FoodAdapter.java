@@ -67,7 +67,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         position = holder.getAdapterPosition();
         Goods goods = goodsList.get(position);
 
-        holder.foodName.setText(goods.getNum());
+        holder.foodName.setText(goods.getName());
         holder.foodPrice.setText(new DecimalFormat("0.00").format(goods.getPrice()));
 
         // 读出美食图片
@@ -76,7 +76,7 @@ public class FoodAdapter extends RecyclerView.Adapter<FoodAdapter.ViewHolder> {
         File file = new File(path+"food_"+filename);
         if(!file.exists()) {
             // 向服务器请求美食图片并存储
-            String url = IOTool.ip+"resources/food/images/"+filename;
+            String url = IOTool.ip+"read/resources/food/images/"+filename;
             String result = IOTool.upAndDown(url, null);
             IOTool.save(result, "food_"+filename, this.context);
         }

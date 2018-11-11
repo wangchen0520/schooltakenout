@@ -97,7 +97,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 获取该商店的美食列表
-                                String url = IOTool.ip+"good/list.do";
+                                String url = IOTool.ip+"read/good/list.do";
                                 List<String> list = new ArrayList<>();
                                 list.add("sellerID_"+thisSeller.getSellerID());
                                 String json = IOTool.upAndDown(url, list);

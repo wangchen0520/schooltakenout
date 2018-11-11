@@ -42,7 +42,7 @@ public class CartAdapter extends RecyclerView.Adapter {
         List<Goods> storeGoods = new ArrayList<>();
 
         // 从服务器获取商家列表
-        url = IOTool.ip+"seller/list.do";
+        url = IOTool.ip+"read/seller/list.do";
         json = IOTool.upAndDown(url, null);
         // 解析商家列表
         type = new TypeToken<List<Seller>>(){}.getType();
@@ -59,7 +59,7 @@ public class CartAdapter extends RecyclerView.Adapter {
 
             Seller seller = sellerList.get(i);
             // 获取该商店的美食列表
-            url = IOTool.ip+"good/list.do";
+            url = IOTool.ip+"read/good/list.do";
             List<String> list = new ArrayList<>();
             list.add("sellerID_"+seller.getSellerID());
             json = IOTool.upAndDown(url, list);
@@ -71,7 +71,7 @@ public class CartAdapter extends RecyclerView.Adapter {
             for(int j = 0; j< goodsList.size(); j++) {
                 if(chosenFood[i][j] != 0) {
                     flag = 1;
-                    Goods goods = goodsList.get(i);
+                    Goods goods = goodsList.get(j);
                     // 因为服务器传来的没有这个数据，自己添加
                     goods.setNum(chosenFood[i][j]);
                     storeGoods.add(goods);
@@ -153,7 +153,7 @@ public class CartAdapter extends RecyclerView.Adapter {
             File file = new File(path+"store_"+filename);
             if(!file.exists()) {
                 // 向服务器请求商家头像并存储
-                String url = IOTool.ip+"resources/seller/head/"+filename;
+                String url = IOTool.ip+"read/resources/seller/head/"+filename;
                 String result = IOTool.upAndDown(url, null);
                 IOTool.save(result, "store_"+filename, this.context);
             }
@@ -186,7 +186,7 @@ public class CartAdapter extends RecyclerView.Adapter {
             File file = new File(path+"food_"+filename);
             if(!file.exists()) {
                 // 向服务器请求美食图片并存储
-                String url = IOTool.ip+"resources/food/images/"+filename;
+                String url = IOTool.ip+"read/resources/food/images/"+filename;
                 String result = IOTool.upAndDown(url, null);
                 IOTool.save(result, "food_"+filename, this.context);
             }
@@ -245,7 +245,7 @@ public class CartAdapter extends RecyclerView.Adapter {
         Seller seller = (Seller) chosenList.get(position);
 
         // 获取该商店的美食列表
-        String url = IOTool.ip+"good/list.do";
+        String url = IOTool.ip+"read/good/list.do";
         List<String> list = new ArrayList<>();
         list.add("sellerID_"+seller.getSellerID());
         String json = IOTool.upAndDown(url, list);

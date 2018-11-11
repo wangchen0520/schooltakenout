@@ -79,7 +79,7 @@ public class StoreActivity extends AppCompatActivity {
 
         // 根据传输过来的sellerID获取商店信息
         int sellerID = intent.getIntExtra("sellerID", 0);
-        url = IOTool.ip+"seller/info.do";
+        url = IOTool.ip+"read/seller/info.do";
         list = new ArrayList<>();
         list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
@@ -92,10 +92,13 @@ public class StoreActivity extends AppCompatActivity {
         chosenNum = intent.getIntArrayExtra("chosenFood"+sellerPosition);
 
         // 获取商店的美食数据
-        url = IOTool.ip+"good/list.do";
+        url = IOTool.ip+"read/good/list.do";
         json = IOTool.upAndDown(url, list);
         Type type = new TypeToken<List<Goods>>(){}.getType();
         goodsList = gson.fromJson(json, type);
+        for(int i=0; i<goodsList.size(); i++) {
+            goodsList.get(i).setNum(chosenNum[i]);
+        }
 
         //获取布局中的构件
         ImageView imageView = findViewById(R.id.store_img);
@@ -123,7 +126,7 @@ public class StoreActivity extends AppCompatActivity {
         File file = new File(path+"store_"+filename);
         if(!file.exists()) {
             // 向服务器请求商家头像并存储
-            url = IOTool.ip+"resources/seller/head/"+filename;
+            url = IOTool.ip+"read/resources/seller/head/"+filename;
             String result = IOTool.upAndDown(url, null);
             IOTool.save(result, "store_"+filename, this);
         }
@@ -242,7 +245,7 @@ public class StoreActivity extends AppCompatActivity {
                         String jsonObject = gson.toJson(ordersList);
                         List<String> jsonList = new ArrayList<>();
                         jsonList.add(jsonObject);
-                        IOTool.upAndDown(IOTool.ip+"orders/add.do", jsonList);
+                        IOTool.upAndDown(IOTool.ip+"write/orders/add.do", jsonList);
                         back();
                     } else {
                         Toast.makeText(StoreActivity.this, "支付失败", Toast.LENGTH_SHORT).show();

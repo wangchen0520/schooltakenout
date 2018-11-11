@@ -70,14 +70,14 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder>{
         File file = new File(path+"food_"+filename);
         if(!file.exists()) {
             // 向服务器请求美食图片并存储
-            String url = IOTool.ip+"resources/food/images/"+filename;
+            String url = IOTool.ip+"read/resources/food/images/"+filename;
             String result = IOTool.upAndDown(url, null);
             IOTool.save(result, "food_"+filename, this.context);
         }
 
         // 根据userID得到用户信息
         int userID = orders.getUserID();
-        String url = IOTool.ip+"user/info.do";
+        String url = IOTool.ip+"read/user/info.do";
         List<String> list = new ArrayList<>();
         list.add("userID_"+userID);
         String json = IOTool.upAndDown(url, list);

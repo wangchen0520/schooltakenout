@@ -16,7 +16,7 @@ import java.util.List;
 
 public class IOTool {
     private static String result;
-    public static String ip = "http://10.132.3.70:8080/";
+    public static String ip = "http://10.132.3.70:8080/compus_takeout/";
 
     public static String upAndDown(String url, List<String> list) {
         int TIME_OUT = 1000;

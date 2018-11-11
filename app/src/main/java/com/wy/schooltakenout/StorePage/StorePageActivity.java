@@ -49,7 +49,7 @@ public class StorePageActivity extends AppCompatActivity {
 
         // 获取传输过来的商店数据
         int sellerID = intent.getIntExtra("sellerID", 0);
-        url = IOTool.ip+"seller/info.do";
+        url = IOTool.ip+"read/seller/info.do";
         list = new ArrayList<>();
         list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
@@ -57,7 +57,7 @@ public class StorePageActivity extends AppCompatActivity {
         thisSeller.setSellerPosition(0);
 
         // 获取商店的订单数据
-        url = IOTool.ip+"orders/list.do";
+        url = IOTool.ip+"read/orders/list.do";
         list = new ArrayList<>();
         list.add("sellerID_"+sellerID);
         json = IOTool.upAndDown(url, list);
@@ -70,7 +70,7 @@ public class StorePageActivity extends AppCompatActivity {
         File file = new File(path+"store_"+filename);
         if(!file.exists()) {
             // 向服务器请求商家头像并存储
-            url = IOTool.ip+"resources/seller/head/"+filename;
+            url = IOTool.ip+"read/resources/seller/head/"+filename;
             String result = IOTool.upAndDown(url, null);
             IOTool.save(result, "store_"+filename, this);
         }

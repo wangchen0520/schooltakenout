@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 // 判断登录信息完整性
                 if(!phone.equals("") && !password.equals("")) {
                     // 得到url
-                    url = IOTool.ip + "user/login.do";
+                    url = IOTool.ip + "read/user/login.do";
                     // 将数据封装
                     List<String> list = new ArrayList<>();
                     list.add("phone_"+phone);
@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.button_login_store:
                 // 得到url
-                url = IOTool.ip + "seller/login.do";
+                url = IOTool.ip + "read/seller/login.do";
                 // 将数据封装
                 String sellerID = userPhoneEdit.getText().toString();
                 String sellerPassword = passwordEdit.getText().toString();

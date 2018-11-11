@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
         userID = getArguments().getInt("userID");
 
         // 从服务器获取商家列表
-        url = IOTool.ip+"user/info.do";
+        url = IOTool.ip+"read/user/info.do";
         json = IOTool.upAndDown(url, null);
         // 解析商家列表
         Type type = new TypeToken<List<Seller>>(){}.getType();

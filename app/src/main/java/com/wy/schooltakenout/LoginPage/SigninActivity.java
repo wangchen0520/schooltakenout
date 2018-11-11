@@ -52,7 +52,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 // 判断登录信息完整性
                 if(!phone.equals("") && !password.equals("")) {
                     // 得到url
-                    String url = IOTool.ip + "user/register.do";
+                    String url = IOTool.ip + "read/user/register.do";
                     // 将数据封装
                     List<String> list = new ArrayList<>();
                     list.add("name_"+name);

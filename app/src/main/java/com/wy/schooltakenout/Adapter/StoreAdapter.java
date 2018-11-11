@@ -72,7 +72,7 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 		File file = new File(path+"store_"+filename);
 		if(!file.exists()) {
 			// 向服务器请求商家头像并存储
-			String url = IOTool.ip+"resources/seller/head/"+filename;
+			String url = IOTool.ip+"read/resources/seller/head/"+filename;
 			String result = IOTool.upAndDown(url, null);
 			IOTool.save(result, "store_"+filename, this.context);
 		}
