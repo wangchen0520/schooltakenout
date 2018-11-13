@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
+import com.wy.schooltakenout.Tool.TestPrinter;
+
+import junit.framework.Test;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,14 +53,15 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 String phone = userPhoneEdit.getText().toString();
                 String password = passwordEdit.getText().toString();
                 // 判断登录信息完整性
-                if(!phone.equals("") && !password.equals("")) {
+                if(!name.equals("") && !phone.equals("") && !password.equals("")) {
                     // 得到url
-                    String url = IOTool.ip + "read/user/register.do";
+                    String url = IOTool.ip + "write/user/register.do";
+                    TestPrinter.print(url);
                     // 将数据封装
                     List<String> list = new ArrayList<>();
                     list.add("name="+name);
                     list.add("phone="+phone);
-                    list.add("password="+password);
+                    list.add("passWord="+password);
                     // 发送往服务器
                     IOTool.upAndDown(url, list);
                     int status = IOTool.getStatus();

@@ -13,6 +13,7 @@ import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.wy.schooltakenout.BottomNavition.AppreciateFragment;
 import com.wy.schooltakenout.BottomNavition.HomeFragment;
 import com.wy.schooltakenout.BottomNavition.MyinfoFragment;
+import com.wy.schooltakenout.Tool.TestPrinter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -64,7 +64,6 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.ViewHolder>{
 		String filename = seller.getSellerID()+".jpg";
 		String url = IOTool.pictureIp+"resources/seller/head/"+filename;
         String path = this.context.getFileStreamPath("store_"+filename).getPath();
-        TestPrinter.print(path);
 		File file = new File(path);
 		IOTool.savePicture(url, path);
 

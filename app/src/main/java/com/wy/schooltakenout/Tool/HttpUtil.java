@@ -1,18 +1,16 @@
 package com.wy.schooltakenout.Tool;
 
-import android.content.Context;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.CountDownLatch;
 
 public class HttpUtil {
     //post方式登录
@@ -27,8 +25,6 @@ public class HttpUtil {
             conn = (HttpURLConnection) url.openConnection();
             //设置连接超时时间，单位ms
             conn.setConnectTimeout(2000);
-            //设置读取超时时间，单位ms
-            conn.setReadTimeout(2000);
             //设置是否从httpURLConnection读入，默认是false
             conn.setDoInput(true);
             //设置是否向httpURLConnection输出，因为post请求参数要放在http正文内，所以要设置为true
@@ -48,8 +44,7 @@ public class HttpUtil {
             //关闭输出流
             os.close();
 
-            int code = conn.getResponseCode();
-            if (code == 200) {
+            if (conn.getResponseCode() == 200) {
                 InputStream inputStream = conn.getInputStream();
                 responseBody = getBytesByInputStream(inputStream);
                 result = new String(responseBody, "UTF-8");
@@ -63,51 +58,50 @@ public class HttpUtil {
 
     //请求图片
     public static void getPicture(final String urlString, final String filePath) {
-        HttpURLConnection conn = null;
-        byte[] requestBody = null;  //请求体
-        byte[] responseBody = null; //响应体
-
-        // 如果没有该文件就创建一下
-        File file = new File(filePath);
-        if(!file.exists()) {
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
+        // 用于等待子线程
+        final CountDownLatch count = new CountDownLatch(1);
+        // 网络访问需要子线程
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    // 向服务器请求商家头像并存储
+                    File file = new File(filePath);
+                    // 如果文件不存在则获取
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                    // 在文件系统中根据路径创建一个新的空文件
+                    file.createNewFile();
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    // 向服务器请求商家头像
+                    URL url = new URL(urlString);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    //设置连接超时时间，单位ms
+                    conn.setConnectTimeout(10000);
+                    //通过setRequestMethod将conn设置成GET方法
+                    conn.setRequestMethod("GET");
+                    //连接成功就存入，否则删除空文件
+                    if (conn.getResponseCode() == 200) {
+                        //获取conn的输入流
+                        InputStream inputStream = conn.getInputStream();
+                        byte[] responseBody = getBytesByInputStream(inputStream);
+                        fileOutputStream.write(responseBody);
+                    } else {
+                        file.delete();
+                    }
+                    // 提醒主线程可以运行了
+                    count.countDown();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-        // 向服务器请求商家头像并存储
-        FileOutputStream fileOutputStream = null;
+        };
+        t.start();
+        // 等待子进程任务完成才运行
         try {
-            // 向服务器请求商家头像并存储
-            fileOutputStream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            URL url = new URL(urlString);
-            conn = (HttpURLConnection) url.openConnection();
-            //设置连接超时时间，单位ms
-            conn.setConnectTimeout(2000);
-            //设置读取超时时间，单位ms
-            conn.setReadTimeout(2000);
-            //设置是否从httpURLConnection读入，默认是false
-            conn.setDoInput(true);
-            //设置是否向httpURLConnection输出，因为post请求参数要放在http正文内，所以要设置为true
-            conn.setDoOutput(true);
-            //POST请求不能用缓存，设置为false
-            conn.setUseCaches(false);
-            //通过setRequestMethod将conn设置成POST方法
-            conn.setRequestMethod("GET");
-            int code = conn.getResponseCode();
-            if (code == 200) {
-                //获取conn的输入流
-                InputStream inputStream = conn.getInputStream();
-                responseBody = getBytesByInputStream(inputStream);
-                fileOutputStream.write(responseBody);
-            }
-        } catch (Exception e) {
+            count.await();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

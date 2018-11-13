@@ -146,7 +146,8 @@ public class ShoppingCartActivity extends AppCompatActivity {
                 }
             }
             //对改变的美食在页面上进行刷新
-            cartAdapter.changeFood(position, chosenFood[sellerID]);
+            int sellerPosition = data.getIntExtra("sellerPosition", 0);
+            cartAdapter.changeFood(position, chosenFood[sellerPosition]);
         }
     }
 
