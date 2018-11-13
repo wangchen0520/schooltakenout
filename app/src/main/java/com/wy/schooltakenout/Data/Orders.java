@@ -1,17 +1,15 @@
 package com.wy.schooltakenout.Data;
 
-import java.sql.Date;
-
 public class Orders {
     private int orderID;
     private int sellerID;
     private int userID;
     private double totalPrice;
-    private Date time;
-    private int goodsID;
-    private int goodsNum;
+    private String time;
+    private String goodsID;
+    private String goodsNum;
 
-    public Orders(int orderID, int sellerID, int userID, double totalPrice, Date time, int goodsID, int goodsNum) {
+    public Orders(int orderID, int sellerID, int userID, double totalPrice, String time, String goodsID, String goodsNum) {
         this.orderID = orderID;
         this.sellerID = sellerID;
         this.userID = userID;
@@ -53,27 +51,27 @@ public class Orders {
         this.totalPrice = totalPrice;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
-    public int getGoodsID() {
+    public String getGoodsID() {
         return goodsID;
     }
 
-    public void setGoodsID(int goodsID) {
+    public void setGoodsID(String goodsID) {
         this.goodsID = goodsID;
     }
 
-    public int getGoodsNum() {
+    public String getGoodsNum() {
         return goodsNum;
     }
 
-    public void setGoodsNum(int goodsNum) {
+    public void setGoodsNum(String goodsNum) {
         this.goodsNum = goodsNum;
     }
 }

@@ -18,13 +18,10 @@ import com.wy.schooltakenout.Data.Goods;
 import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
-import com.wy.schooltakenout.Tool.TestPrinter;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -271,6 +268,7 @@ public class CartAdapter extends RecyclerView.Adapter {
             for(int i = 0; i< goodsList.size(); i++) {
                 if(changedFoods[i] != 0) {
                     Goods goods = goodsList.get(i);
+                    goods.setNum(changedFoods[i]);
                     changedList.add(goods);
                 }
             }

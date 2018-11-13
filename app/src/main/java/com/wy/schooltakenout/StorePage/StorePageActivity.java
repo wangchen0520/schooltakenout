@@ -18,6 +18,7 @@ import com.wy.schooltakenout.Data.Orders;
 import com.wy.schooltakenout.Data.Seller;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.Tool.IOTool;
+import com.wy.schooltakenout.Tool.TestPrinter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -83,7 +84,7 @@ public class StorePageActivity extends AppCompatActivity {
         GridLayoutManager orderLayoutManager=new GridLayoutManager(this,1);
         orderView.setLayoutManager(orderLayoutManager);
         //设置适配器
-        OrderAdapter orderAdapter = new OrderAdapter(ordersList);
+        OrderAdapter orderAdapter = new OrderAdapter(ordersList, sellerID);
         orderView.setAdapter(orderAdapter);
     }
 }

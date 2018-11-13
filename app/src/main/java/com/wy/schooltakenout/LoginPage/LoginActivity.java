@@ -15,6 +15,7 @@ import com.wy.schooltakenout.MainActivity;
 import com.wy.schooltakenout.R;
 import com.wy.schooltakenout.StorePage.StorePageActivity;
 import com.wy.schooltakenout.Tool.IOTool;
+import com.wy.schooltakenout.Tool.TestPrinter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,36 +107,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(LoginActivity.this, "请填写完整", Toast.LENGTH_LONG).show();
                 break;
             case R.id.button_login_store:
-                // 得到url
-                url = IOTool.ip + "read/seller/login.do";
-                // 将数据封装
+                // 获取登录信息
                 String sellerID = userPhoneEdit.getText().toString();
                 String sellerPassword = passwordEdit.getText().toString();
-                List<String> list = new ArrayList<>();
-                list.add("sellerID="+sellerID);
-                list.add("passWord="+sellerPassword);
-                // 发送往服务器
-                IOTool.upAndDown(url, list);
-                JSONObject json = IOTool.getData();
-                int status = IOTool.getStatus();
-                // 对服务器返回内容进行处理
-                if(status == 0) {
-                    Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
-                } else if(status == 1) {
-                    Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
-                    // result即为sellerID，将其传入StorePageActivity
-                    intent = new Intent(LoginActivity.this, StorePageActivity.class);
-
-                    // 将sellerID从result中解析出来
-                    int sellerIDInt = 0;
-                    try {
-                        sellerIDInt = json.getInt("sellerID");
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                // 判断登录信息完整性
+                if(!sellerID.equals("") && !sellerPassword.equals("")) {
+                    // 得到url
+                    url = IOTool.ip + "read/seller/login.do";
+                    // 将数据封装
+                    List<String> list = new ArrayList<>();
+                    list.add("sellerID="+sellerID);
+                    list.add("passWord="+sellerPassword);
+                    // 发送往服务器
+                    IOTool.upAndDown(url, list);
+                    JSONObject json = IOTool.getData();
+                    int status = IOTool.getStatus();
+                    // 对服务器返回内容进行处理
+                    if (status == 0) {
+                        Toast.makeText(LoginActivity.this, "用户名或密码错误", Toast.LENGTH_LONG).show();
+                    } else if (status == 1) {
+                        Toast.makeText(LoginActivity.this, "登录成功", Toast.LENGTH_LONG).show();
+                        intent = new Intent(LoginActivity.this, StorePageActivity.class);
+                        intent.putExtra("sellerID", Integer.parseInt(sellerID));
+                        startActivity(intent);
                     }
-
-                    intent.putExtra("sellerID", sellerIDInt);
-                    startActivity(intent);
                 }
                 break;
             case R.id.button_signin:

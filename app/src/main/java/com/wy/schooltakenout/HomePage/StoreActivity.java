@@ -33,6 +33,9 @@ import com.wy.schooltakenout.Tool.OrderView.OrderView;
 import com.wy.schooltakenout.Tool.Pay.PayResult;
 import com.wy.schooltakenout.Tool.Pay.util.OrderInfoUtil2_0;
 import com.wy.schooltakenout.R;
+import com.wy.schooltakenout.Tool.TestPrinter;
+
+import junit.framework.Test;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,6 +44,7 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.sql.Date;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -227,28 +231,54 @@ public class StoreActivity extends AppCompatActivity {
                     // 判断resultStatus 为9000则代表支付成功
                     if (TextUtils.equals(resultStatus, "9000")) {
                         Toast.makeText(StoreActivity.this, "支付成功", Toast.LENGTH_SHORT).show();
-                        // 生成订单的json数据并上传
-                        Gson gson = new Gson();
-                        List<Orders> ordersList = new ArrayList<>();
+                        // 得到购买的商品数量，用于数组的初始化
+                        int num = 0;
                         for(int i = 0; i< goodsList.size(); i++) {
                             if(chosenNum[i] != 0) {
-                                Orders orders = new Orders(
-                                        i,
-                                        thisSeller.getSellerID(),
-                                        userID,
-                                        chosenNum[i]*goodsList.get(i).getPrice(),
-                                        new Date(System.currentTimeMillis()),
-                                        goodsList.get(i).getGoodsID(),
-                                        chosenNum[i]);
-                                ordersList.add(orders);
+                                num++;
+                            }
+                        }
+                        // 计算总价、得到foodID和foodNum数组
+                        int[] foodIDs = new int[num];
+                        int[] foodNums = new int[num];
+                        int j = 0;
+                        for(int i = 0; i< goodsList.size(); i++) {
+                            if(chosenNum[i] != 0) {
+                                foodIDs[j] = goodsList.get(i).getGoodsID();
+                                foodNums[j] = chosenNum[i];
+                                j++;
                                 // 提交成功后清空选择的项
                                 chosenNum[i] = 0;
                             }
                         }
-                        String jsonObject = gson.toJson(ordersList);
+                        // 将foodID和foodNum数组转化为字符串
+                        StringBuilder IDsb = new StringBuilder();
+                        StringBuilder Numsb = new StringBuilder();
+                        for(int i=0; i<num; i++) {
+                            IDsb.append(foodIDs[i]);
+                            Numsb.append(foodNums[i]);
+                            if(i < num-1) {
+                                IDsb.append("_");
+                                Numsb.append("_");
+                            }
+                        }
+                        String foodIDString = IDsb.toString();
+                        String foodNumString = Numsb.toString();
+                        // 得到时间
+                        Date currentTime = new Date(System.currentTimeMillis());
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String dateString = formatter.format(currentTime);
+                        // 生成订单的json数据并上传
                         List<String> jsonList = new ArrayList<>();
-                        jsonList.add("json"+jsonObject);
+                        jsonList.add("sellerID="+thisSeller.getSellerID());
+                        jsonList.add("userID="+userID);
+                        jsonList.add("totalPrice="+totalPrice);
+                        jsonList.add("goodsID="+foodIDString);
+                        jsonList.add("goodsNum="+foodNumString);
+                        jsonList.add("time="+dateString);
                         IOTool.upAndDown(IOTool.ip+"write/orders/add.do", jsonList);
+                        int status = IOTool.getStatus();
+                        TestPrinter.print(status+"");
                         back();
                     } else {
                         Toast.makeText(StoreActivity.this, "支付失败", Toast.LENGTH_SHORT).show();
@@ -263,8 +293,10 @@ public class StoreActivity extends AppCompatActivity {
     private void back() {
         Intent intent = new Intent();
         for(int i=0; i<sellerNum; i++) {
-            intent.putExtra("chosenFood"+i, this.getIntent().getIntArrayExtra("chosenFood"+i));
+            int[] tempChosen = this.getIntent().getIntArrayExtra("chosenFood"+i);
+                intent.putExtra("chosenFood"+i, tempChosen);
         }
+        intent.putExtra("sellerPosition", sellerPosition);
         setResult(resultCode, intent);
         finish();
     }

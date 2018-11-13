@@ -67,13 +67,21 @@ public class IOTool {
                 e.printStackTrace();
             }
         }
+        // 如果都不对就没有状态信息
+        if(data == null && dateArray == null) {
+            try {
+                data = new JSONObject(result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
         if(data != null) {
-            TestPrinter.print(data.toString());
+            TestPrinter.print("1_"+data.toString());
         }
         if(dateArray != null) {
             try {
-                TestPrinter.print(dateArray.getJSONObject(0).toString());
+                TestPrinter.print("1_"+dateArray.getJSONObject(0).toString());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -157,7 +165,7 @@ public class IOTool {
                     }
                 }
             }
-            IOTool.result = HttpUtil.doPost(url, request);
+            result = HttpUtil.doPost(url, request);
             TestPrinter.print("0_"+result);
             count.countDown();
         }
